@@ -27,8 +27,12 @@ char list_tags_2[] = "--list";
 //char list_all_1[] = "-a";
 //char list_all_2[] = "--all";
 
+char search_all[] = "-s";
+
 char no_tag_1[] = "-n";
 char no_tag_2[] = "--notag";
+
+char tag_only[] = "-tg";
 
 char type[] = "-t";
 
@@ -200,35 +204,86 @@ char type_2[] = "jpeg";
 
 #test verify_search_all_tags_no_files
 	/* Search, all tags, no files */
-	char *search_all_tags_no_files[] = {program_name, list_tags_1};
+	char *search_all_tags_no_files[] = {program_name, search_all, tag_only};
 	fail_unless(verify_input(SIZEOF(search_all_tags_no_files), search_all_tags_no_files) == 1, "Meant to fail!");
 
 #test verify_search_all_files_all_tags
 	/* Search, all tagged files, with tags */
-	char *search_all_files_all_tags[] = {program_name, list_all_1};
+	char *search_all_files_all_tags[] = {program_name, search_all};
 	fail_unless(verify_input(SIZEOF(search_all_files_all_tags), search_all_files_all_tags) == 1, "Meant to fail!");
 
 #test verify_search_all_files_no_tags
 	/* Search, all tagged files, no tags */
-	char *search_all_files_no_tags[] = {program_name, no_tag_1};
+	char *search_all_files_no_tags[] = {program_name, search_all, no_tag_1};
 	fail_unless(verify_input(SIZEOF(search_all_files_no_tags), search_all_files_no_tags) == 1, "Meant to fail!");
 
 #test verify_search_one_directory_one_tag
 	/* Search, one directory, one tag */
-	char *search_one_directory_one_tag[] = {program_name, list_tags_1, path_to_dir_1, tag_1};
+	char *search_one_directory_one_tag[] = {program_name, path_to_dir_1, tag_1};
 	fail_unless(verify_input(SIZEOF(search_one_directory_one_tag), search_one_directory_one_tag) == 1, "Meant to fail!");
 
 #test verify_search_one_directory_many_tags
 	/* Search, one directory, multiple tags */
-	char *search_one_directory_many_tags[] = {program_name, list_tags_1, path_to_dir_1, tag_1, tag_2, tag_3};
+	char *search_one_directory_many_tags[] = {program_name, path_to_dir_1, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(search_one_directory_many_tags), search_one_directory_many_tags) == 1, "Meant to fail!");
 
 #test verify_search_many_directories_one_tag
 	/* Search, multiple directories, one tag */
-	char *search_many_directories_one_tag[] = {program_name, list_tags_1, path_to_dir_1, path_to_dir_2, tag_1};
+	char *search_many_directories_one_tag[] = {program_name, path_to_dir_1, path_to_dir_2, tag_1};
 	fail_unless(verify_input(SIZEOF(search_many_directories_one_tag), search_many_directories_one_tag) == 1, "Meant to fail!");
 
 #test verify_search_many_directories_many_tags
 	/* Search, multiple directories, multiple tags */
-	char *search_many_directories_many_tags[] = {program_name, list_tags_1, path_to_dir_1, path_to_dir_2, tag_1, tag_2, tag_3};
+	char *search_many_directories_many_tags[] = {program_name, path_to_dir_1, path_to_dir_2, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(search_many_directories_many_tags), search_many_directories_many_tags) == 1, "Meant to fail!");
+
+#test verify_search_one_directory_one_type_one_tag
+	/* Search, one directory, one type, one tag */
+	char *search_one_directory_one_type_one_tag[] = {program_name, path_to_dir_1, type, type_1, tag_1};
+	fail_unless(verify_input(SIZEOF(search_one_directory_one_type_one_tag), search_one_directory_one_type_one_tag) == 1, 
+		"Meant to fail!");
+
+#test verify_search_one_directory_one_type_many_tags
+	/* Search, one directory, one type, many tags */
+	char *search_one_directory_one_type_many_tags[] = {program_name, path_to_dir_1, type, type_1, tag_1, tag_2, tag_3};
+	fail_unless(verify_input(SIZEOF(search_one_directory_one_type_many_tags), search_one_directory_one_type_many_tags) == 1, 
+		"Meant to fail!");
+
+#test verify_search_one_directory_many_types_one_tag
+	/* Search, one directory, many types, one tag */
+	char *search_one_directory_many_types_one_tag[] = {program_name, path_to_dir_1, type, type_1, type_2, tag_1};
+	fail_unless(verify_input(SIZEOF(search_one_directory_many_types_one_tag), search_one_directory_many_types_one_tag) == 1, 
+		"Meant to fail!");
+
+#test verify_search_many_directories_one_type_one_tag
+	/* Search, many directories, one type, one tag */
+	char *search_many_directories_one_type_one_tag[] = {program_name, path_to_dir_1, path_to_dir_2, type, type_1, tag_1};
+	fail_unless(verify_input(SIZEOF(search_many_directories_one_type_one_tag), search_many_directories_one_type_one_tag) == 1, 
+		"Meant to fail!");
+
+#test verify_search_many_directories_many_types_one_tag
+	/* Search, many directories, many types, one tag */
+	char *search_many_directories_many_types_one_tag[] = {program_name, path_to_dir_1, path_to_dir_2, type, type_1, type_2, tag_1};
+	fail_unless(verify_input(SIZEOF(search_many_directories_many_types_one_tag), search_many_directories_many_types_one_tag) == 1, 
+		"Meant to fail!");
+
+#test verify_search_many_directories_one_type_many_tags
+	/* Search, many directories, one type, many tags */
+	char *search_many_directories_one_type_many_tags[] = {
+		program_name, path_to_dir_1, path_to_dir_2, type, type_1, tag_1, tag_2, tag_3};
+	fail_unless(verify_input(SIZEOF(search_many_directories_one_type_many_tags), search_many_directories_one_type_many_tags) == 1, 
+		"Meant to fail!");
+
+#test verify_search_one_directory_many_types_many_tags
+	/* Search, one directory, many types, many tags */
+	char *search_one_directory_many_types_many_tags[] = {
+		program_name, path_to_dir_1, type, type_1, type_2, tag_1, tag_2, tag_3};
+	fail_unless(verify_input(SIZEOF(search_one_directory_many_types_many_tags), search_one_directory_many_types_many_tags) == 1, 
+		"Meant to fail!");
+
+#test verify_search_many_directories_many_types_many_tags
+	/* Search, many directories, many types, many tags */
+	char *search_many_directories_many_types_many_tags[] = {
+		program_name, path_to_dir_1, path_to_dir_2, type, type_1, type_2, tag_1, tag_2, tag_3};
+	fail_unless(verify_input(SIZEOF(search_many_directories_many_types_many_tags), search_many_directories_many_types_many_tags) == 1 
+		"Meant to fail!");
