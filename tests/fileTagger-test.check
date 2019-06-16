@@ -19,7 +19,7 @@ char add_2[] = "-add";
 
 char delete_1[] = "-d";
 char delete_2[] = "--delete";
-char delete_all[] = "-da";
+char delete_recursive[] = "-r";
 
 char list_tags_1[] = "-l";
 char list_tags_2[] = "--list";
@@ -140,17 +140,17 @@ char type_2[] = "jpeg";
 
 #test verify_delete_one_file_all_tags
 	/* Delete, one file, all tags */
-	char *delete_one_file_all_tags[] = {program_name, delete_all, path_to_file_1};
+	char *delete_one_file_all_tags[] = {program_name, delete_recursive, path_to_file_1};
 	fail_unless(verify_input(SIZEOF(delete_one_file_all_tags), delete_one_file_all_tags) == 1, "Meant to fail!");
 
 #test verify_delete_many_files_all_tags
 	/* Delete, multiple files, all tags */
-	char *delete_many_files_all_tags[] = {program_name, delete_all, path_to_file_1, path_to_file_2};
+	char *delete_many_files_all_tags[] = {program_name, delete_recursive, path_to_file_1, path_to_file_2};
 	fail_unless(verify_input(SIZEOF(delete_many_files_all_tags), delete_many_files_all_tags) == 1, "Meant to fail!");
 
 #test verify_delete_one_directory_one_tag
 	/* Delete, one directory, one tag */
-	char *delete_one_file_one_tag[] = {program_name, delete_1,  path_to_dir_1, tag_1};
+	char *delete_one_file_one_tag[] = {program_name, delete_1, path_to_dir_1, tag_1};
 	fail_unless(verify_input(SIZEOF(delete_one_file_one_tag), delete_one_file_one_tag) == 1, "Meant to fail!");
 
 #test verify_delete_one_directory_many_tags
@@ -170,12 +170,12 @@ char type_2[] = "jpeg";
 
 #test verify_delete_one_directory_all_tags
 	/* Delete, one directory, all tags */
-	char *delete_one_directory_all_tags[] = {program_name, delete_all, path_to_dir_1};
+	char *delete_one_directory_all_tags[] = {program_name, delete_recursive, path_to_dir_1};
 	fail_unless(verify_input(SIZEOF(delete_one_directory_all_tags), delete_one_directory_all_tags) == 1, "Meant to fail!");
 
 #test verify_delete_many_directory_all_tags
 	/* Delete, multiple directories, all tags */
-	char *delete_many_directory_all_tags[] = {program_name, delete_all, path_to_file_1, path_to_file_2};
+	char *delete_many_directory_all_tags[] = {program_name, delete_recursive, path_to_file_1, path_to_file_2};
 	fail_unless(verify_input(SIZEOF(delete_many_directory_all_tags), delete_many_directory_all_tags) == 1, "Meant to fail!");
 
 #test verify_delete_one_tag
