@@ -14,6 +14,9 @@ char tag_1[] = "first";
 char tag_2[] = "second";
 char tag_3[] = "third";
 
+char add_1[] = "-a";
+char add_2[] = "-add";
+
 char delete_1[] = "-d";
 char delete_2[] = "--delete";
 char delete_all[] = "-da";
@@ -21,91 +24,99 @@ char delete_all[] = "-da";
 char list_tags_1[] = "-l";
 char list_tags_2[] = "--list";
 
-char list_all_1[] = "-a";
-char list_all_2[] = "--all";
+//char list_all_1[] = "-a";
+//char list_all_2[] = "--all";
 
 char no_tag_1[] = "-n";
 char no_tag_2[] = "--notag";
 
+char type[] = "-t";
+
+char type_1[] = "png";
+char type_2[] = "jpeg";
+
 #test verify_input_one_file_one_tag
 	/* Add, one file, one tag */
-	char *one_file_one_tag[] = {program_name, path_to_file_1, tag_1}; 
+	char *one_file_one_tag[] = {program_name, add_1, path_to_file_1, tag_1}; 
 	fail_unless(verify_input(SIZEOF(one_file_one_tag), one_file_one_tag) == 1, "Meant to fail!");
 
-#test verify_input_one_file_many_tag
+#test verify_input_one_file_many_tags
 	/* Add, one file, multiple tags */
-	char *one_file_many_tags[] = {program_name, path_to_file_1, tag_1, tag_2, tag_3};
+	char *one_file_many_tags[] = {program_name, add_1, path_to_file_1, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(one_file_many_tags), one_file_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_many_files_one_tag
 	/* Add, multiple files, one tag */
-	char *many_files_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_files_one_tag[] = {program_name, add_1, path_to_file_1, path_to_file_2, tag_1};
 	fail_unless(verify_input(SIZEOF(many_files_one_tag), many_files_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_many_files_many_tags
 	/* Add, multiple files, multiple tags */
-	char *many_files_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1, tag_2, tag_3};
+	char *many_files_one_tag[] = {program_name, add_1, path_to_file_1, path_to_file_2, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(many_files_one_tag), many_files_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_one_tag
 	/* Add, one directory, one tag */
-	char *one_directory_one_tag[] = {program_name, path_to_dir_1, tag_1};
+	char *one_directory_one_tag[] = {program_name, add_1, path_to_dir_1, tag_1};
 	fail_unless(verify_input(SIZEOF(one_directory_one_tag), one_directory_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_many_tags
 	/* Add, one directory, multiple tags */
-	char *one_directory_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *one_directory_many_tags[] = {program_name, add_1, path_to_dir_1, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(one_directory_many_tags), one_directory_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_one_tag
 	/* Add, multiple directories, one tag */
-	char *many_directory_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_directory_one_tag[] = {program_name, add_1, path_to_dir_1, path_to_dir_2, tag_1};
 	fail_unless(verify_input(SIZEOF(many_directory_one_tag), many_directory_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_many_tags
 	/* Add, multiple directories, multiple tags */
-	char *many_directory_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_directory_many_tags[] = {program_name, add_1, path_to_dir_1, path_to_dir_2, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(many_directory_many_tags), many_directory_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_one_type_one_tag
 	/* Add, one directory, one file type, one tag */
-	char *one_directory_one_type_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *one_directory_one_type_one_tag[] = {program_name, add_1, path_to_dir_1, type, type_1, tag_1};
 	fail_unless(verify_input(SIZEOF(one_directory_one_type_one_tag), one_directory_one_type_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_one_type_many_tags
 	/* Add, one directory, one file type, multiple tags */
-	char *one_directory_one_type_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *one_directory_one_type_many_tags[] = {program_name, add_1, path_to_dir_1, type, type_1, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(one_directory_one_type_many_tags), one_directory_one_type_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_one_type_one_tag
 	/* Add, multiple directories, one file type, one tag */
-	char *many_directory_one_type_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_directory_one_type_one_tag[] = {program_name, add_1, path_to_dir_1, path_to_dir_2, type, type_1, tag_1};
 	fail_unless(verify_input(SIZEOF(many_directory_one_type_one_tag), many_directory_one_type_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_one_type_many_tags
 	/* Add, multiple directiries, one file type, multiple tags */
-	char *many_directory_one_type_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_directory_one_type_many_tags[] = {
+		program_name, add_1, path_to_dir_1, path_to_dir_2, type, type_1, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(many_directory_one_type_many_tags), many_directory_one_type_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_many_types_one_tag
 	/* Add, one directory, multiple file types, one tag */
-	char *one_directory_many_types_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *one_directory_many_types_one_tag[] = {program_name, add_1, path_to_dir_1, type, type_1, type_2, tag_1};
 	fail_unless(verify_input(SIZEOF(one_directory_many_types_one_tag), one_directory_many_types_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_one_directory_many_types_many_tags
 	/* Add, one directory, multiple file types, multiple tags */
-	char *one_directory_many_types_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *one_directory_many_types_many_tags[] = {program_name, add_1, path_to_dir_1, type, type_1, type_2, tag_1, tag_2, tag_3};
 	fail_unless(verify_input(SIZEOF(one_directory_many_types_many_tags), one_directory_many_types_many_tags) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_many_types_one_tag
 	/* Add, multiple directories, multiple file types, one tag */
-	char *many_directory_many_types_one_tag[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
+	char *many_directory_many_types_one_tag[] = {program_name, add_1, path_to_dir_1, path_to_dir_2, type, type_1, type_2, tag_1};
 	fail_unless(verify_input(SIZEOF(many_directory_many_types_one_tag), many_directory_many_types_one_tag) == 1, "Meant to fail!");
 
 #test verify_input_many_directory_many_types_many_tags
 	/* Add, multiple directories, multiple file types, multiple tags */
-	char *many_directory_many_types_many_tags[] = {program_name, path_to_file_1, path_to_file_2, tag_1};
-	fail_unless(verify_input(SIZEOF(many_directory_many_types_many_tags), many_directory_many_types_many_tags) == 1, "Meant to fail!");
+	char *many_directory_many_types_many_tags[] = {
+		program_name, add_1, path_to_dir_1, path_to_dir_2, type, type_1, type_2, tag_1, tag_2, tag_3};
+	fail_unless(verify_input(SIZEOF(many_directory_many_types_many_tags), many_directory_many_types_many_tags) == 1, 
+		"Meant to fail!");
 
 #test verify_delete_one_file_one_tag
 	/* Delete, one file, one tag */
