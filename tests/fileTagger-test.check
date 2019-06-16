@@ -285,5 +285,5 @@ char type_2[] = "jpeg";
 	/* Search, many directories, many types, many tags */
 	char *search_many_directories_many_types_many_tags[] = {
 		program_name, path_to_dir_1, path_to_dir_2, type, type_1, type_2, tag_1, tag_2, tag_3};
-	fail_unless(verify_input(SIZEOF(search_many_directories_many_types_many_tags), search_many_directories_many_types_many_tags) == 1 
+	fail_unless(verify_input(SIZEOF(search_many_directories_many_types_many_tags), search_many_directories_many_types_many_tags) == 1,
 		"Meant to fail!");
