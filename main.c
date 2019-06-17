@@ -3,8 +3,7 @@
 
 int main(int argc, char* argv[]) {
 
-	int result = verify_input(argc, argv);
-	printf("%d", result);
+	verify_input(argc, argv);
 
 	return 0;
 }
