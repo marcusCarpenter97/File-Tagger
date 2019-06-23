@@ -14,6 +14,22 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	return -1;
 }
 
+//int num_of_transitions, char* transitions[]
+int verify_input(void) {
+	enum state_codes cur_state = START_STATE;
+	enum ret_codes ret_code;
+	int (* state_func) (void);
+	
+	while (1) {
+		state_func = state[cur_state];
+		ret_code = state_func();
+		if (cur_state == EXIT_STATE) {	
+			break;
+		}
+		cur_state = move_to_next_state(cur_state, ret_code);
+	}
+}
+
 int waiting_for_input_state(void) {
 	printf("waiting for input.\n");
 	return ok;
@@ -23,6 +39,10 @@ int select_option_state(void) {
 	printf("select option.\n");
 	return ok;
 }
+
+/*--------------
+ *  Add states
+ *--------------*/
 
 int add_tag_state(void) {
 	printf("add tag.\n");
@@ -42,20 +62,4 @@ int add_tags_selected_state(void) {
 int add_tags_state(void) {
 	printf("adding tags.\n");
 	return ok;
-}
-
-//int num_of_transitions, char* transitions[]
-int verify_input(void) {
-	enum state_codes cur_state = START_STATE;
-	enum ret_codes ret_code;
-	int (* state_func) (void);
-	
-	while (1) {
-		state_func = state[cur_state];
-		ret_code = state_func();
-		if (cur_state == EXIT_STATE) {	
-			break;
-		}
-		cur_state = move_to_next_state(cur_state, ret_code);
-	}
 }
