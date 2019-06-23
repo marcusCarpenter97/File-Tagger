@@ -1,39 +1,19 @@
 #include <stdio.h>
-#include "fileTagger.c"
+#include "stateMachine.c"
 #include "inputStack.c"
+
+int initialize_stack(int stack_size, char* stack_items[]) {
+
+	int stack_index;
+
+	for (stack_index = stack_size - 1; stack_index >= 0; stack_index--) {
+		push(stack_items[stack_index]);
+	}
+}
 
 int main(int argc, char* argv[]) {
 
-	verify_input();
-
-	int stack_state = is_empty();
-	printf("\n%d\n", stack_state);
-
-	push("Hello");
-	push("World");
-	push("Test");
-	push("stack");
-	push("ok");
-	push("full");
-
-	stack_state = is_full();
-	printf("%d\n", stack_state);
-
-	const char* ret = peek();
-	printf("%s\n", ret);
-
-	stack_state = is_empty();
-	printf("%d\n", stack_state);
-	
-	pop();
-	pop();
-	pop();
-	pop();
-	pop();
-	pop();
-
-	stack_state = is_empty();
-	printf("%d\n", stack_state);
+	initialize_stack(argc, argv);
 	
 	return 0;
 }

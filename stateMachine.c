@@ -1,4 +1,5 @@
-#include "fileTagger.h"
+#include "stateMachine.h"
+#include "inputStack.h"
 
 int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	int num_transitions = sizeof(state_transitions) / sizeof(state_transitions[0]);
