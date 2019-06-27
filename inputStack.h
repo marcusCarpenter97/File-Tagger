@@ -5,7 +5,8 @@
 #define EMPTY -1
 
 const char *input_stack[MAX_SIZE];
-int top = EMPTY;
+
+extern int top;
 
 int is_empty();
 int is_full();

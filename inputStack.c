@@ -1,4 +1,7 @@
+#include <stdio.h>
 #include "inputStack.h"
+
+int top = EMPTY;
 
 int is_empty() {
 	if (top == EMPTY) {

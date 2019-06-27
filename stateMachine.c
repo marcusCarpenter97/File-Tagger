@@ -1,6 +1,24 @@
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "stateMachine.h"
 #include "inputStack.h"
+
+int (* state[])(const char* s) = {waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state, add_tags_state};
+
+struct transition state_transitions[] = {
+	{waiting_for_input, ok, select_option},
+	{waiting_for_input, fail, waiting_for_input},
+	{select_option, ok, add_tag},
+	{select_option, fail, waiting_for_input},
+	{add_tag, ok, add_files_selected},
+	{add_tag, fail, waiting_for_input},
+	{add_files_selected, ok, add_tags_selected},
+	{add_files_selected, repeat, add_files_selected},
+	{add_files_selected, fail, waiting_for_input},
+	{add_tags_selected, ok, add_tags},
+	{add_tags_selected, repeat, add_tags_selected},
+	{add_tags_selected, fail, waiting_for_input}};
 
 int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	int num_transitions = sizeof(state_transitions) / sizeof(state_transitions[0]);

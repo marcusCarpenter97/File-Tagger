@@ -1,7 +1,6 @@
-#include <stdio.h>
-#include <string.h>
-#include "stateMachine.c"
-#include "inputStack.c"
+#include <stdlib.h>
+#include "stateMachine.h"
+#include "inputStack.h"
 
 int initialize_stack(int stack_size, char* stack_items[]) {
 
