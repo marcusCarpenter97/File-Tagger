@@ -59,7 +59,7 @@ int verify_input(void) {
 }
 
 int waiting_for_input_state(const char* s) {
-	printf("waiting for input.\n");
+	printf("waiting for input.\n%s\n",s);
 	if (strcmp(s, PROGRAMME_NAME) == 0) {
 		return ok;
 	}

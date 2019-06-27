@@ -29,6 +29,6 @@ extern struct transition state_transitions[];
 #define START_STATE waiting_for_input
 #define EXIT_STATE add_tags
 
-#define PROGRAMME_NAME "tag"
+#define PROGRAMME_NAME "./tag"
 
 #endif /* STATEMACHINE_H */
