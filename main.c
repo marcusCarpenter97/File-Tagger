@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "stateMachine.c"
 #include "inputStack.c"
 
@@ -14,6 +15,8 @@ int initialize_stack(int stack_size, char* stack_items[]) {
 int main(int argc, char* argv[]) {
 
 	initialize_stack(argc, argv);
-	
-	return 0;
+
+	verify_input();	
+
+	return EXIT_SUCCESS;
 }

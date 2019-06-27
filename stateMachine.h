@@ -2,14 +2,14 @@ int verify_input(void);
 //int num_of_transitions, char* transitions[]
 int move_to_next_state(unsigned int cur_state, unsigned int ret_code);
 
-int waiting_for_input_state(void);
-int select_option_state(void);
-int add_tag_state(void);
-int add_files_selected_state(void);
-int add_tags_selected_state(void);
-int add_tags_state(void);
+int waiting_for_input_state(const char* s);
+int select_option_state(const char* s);
+int add_tag_state(const char* s);
+int add_files_selected_state(const char* s);
+int add_tags_selected_state(const char* s);
+int add_tags_state(const char* s);
 
-int (* state[])(void) = {waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state,
+int (* state[])(const char* s) = {waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state,
        	add_tags_state};
 enum state_codes {waiting_for_input, select_option, add_tag, add_files_selected, add_tags_selected, add_tags};
 
@@ -37,3 +37,5 @@ struct transition state_transitions[] = {
 
 #define START_STATE waiting_for_input
 #define EXIT_STATE add_tags
+
+#define PROGRAMME_NAME "tag"

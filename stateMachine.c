@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "stateMachine.h"
 #include "inputStack.h"
 
@@ -15,28 +16,38 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	return -1;
 }
 
-//int num_of_transitions, char* transitions[]
 int verify_input(void) {
 	enum state_codes cur_state = START_STATE;
 	enum ret_codes ret_code;
-	int (* state_func) (void);
+	int (* state_func) (const char* s);
 	
 	while (1) {
 		state_func = state[cur_state];
-		ret_code = state_func();
+		
+		/* Give next item in the stack as parameter to state function. */
+		ret_code = state_func(pop());
+
+		if (ret_code == fail) {
+			printf("Invalid input.\n");
+			exit(EXIT_FAILURE);
+		}
+
 		if (cur_state == EXIT_STATE) {	
-			break;
+			exit(EXIT_SUCCESS);
 		}
 		cur_state = move_to_next_state(cur_state, ret_code);
 	}
 }
 
-int waiting_for_input_state(void) {
+int waiting_for_input_state(const char* s) {
 	printf("waiting for input.\n");
-	return ok;
+	if (strcmp(s, PROGRAMME_NAME) == 0) {
+		return ok;
+	}
+	return fail;
 }
 
-int select_option_state(void) {
+int select_option_state(const char* s) {
 	printf("select option.\n");
 	return ok;
 }
@@ -45,22 +56,22 @@ int select_option_state(void) {
  *  Add states
  *--------------*/
 
-int add_tag_state(void) {
+int add_tag_state(const char* s) {
 	printf("add tag.\n");
 	return ok;
 }
 
-int add_files_selected_state(void) {
+int add_files_selected_state(const char* s) {
 	printf("add files.\n");
 	return ok;
 }
 
-int add_tags_selected_state(void) {
+int add_tags_selected_state(const char* s) {
 	printf("tags selected.\n");
 	return ok;
 }
 
-int add_tags_state(void) {
+int add_tags_state(const char* s) {
 	printf("adding tags.\n");
 	return ok;
 }
