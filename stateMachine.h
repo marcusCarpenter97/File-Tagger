@@ -12,7 +12,7 @@ int add_files_selected_state(const char* s);
 int add_tags_selected_state(const char* s);
 int add_tags_state(const char* s);
 
-extern int (* state[])(const char* s);
+extern int (* state[])(const char* s); /* Array of function pointers where all functions take a cons char* as a parameter. */
 
 enum state_codes {waiting_for_input, select_option, add_tag, add_files_selected, add_tags_selected, add_tags};
 

@@ -4,7 +4,8 @@
 #include "stateMachine.h"
 #include "inputStack.h"
 
-int (* state[])(const char* s) = {waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state, add_tags_state};
+int (* state[])(const char* s) = 
+	{waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state, add_tags_state};
 
 struct transition state_transitions[] = {
 	{waiting_for_input, ok, select_option},
