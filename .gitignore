@@ -2,3 +2,5 @@
 build/
 tests/*.c
 a.out
+*.o
+tag
