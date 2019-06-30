@@ -37,7 +37,7 @@ const char* pop() {
 	}
 }
 
-int push(const char* item) {
+void push(const char* item) {
 	
 	if (!is_full()) {
 		input_stack[++top] = item;
