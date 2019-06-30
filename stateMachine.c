@@ -68,6 +68,26 @@ int waiting_for_input_state(const char* s) {
 	return fail;
 }
 
+/* Check whether a string is a path to a directory or a file. */
+int check_path(const char* string) {
+
+	struct stat file_status;
+
+	if (stat(string,&file_status) == 0) {
+
+		if (file_status.st_mode & S_IFDIR) {
+			printf("Directory!\n");
+			return directory;
+		}
+		if (file_status.st_mode & S_IFREG) {
+			printf("File!\n");
+			return file;
+		}
+	}
+		printf("Error: Not a file or directory.\n");
+		return invalid_path;
+}
+
 /*
  * PROBLEM: switch only accepts ints.
  * SOLUTION 1: use if else chain and hard code values.
@@ -97,25 +117,15 @@ int add_tag_state(const char* s) {
 	printf("add tag.\n");
 	
 	int ret_code;
-	struct stat file_status;	
-	
-	if (stat(s,&file_status) == 0) {
+	int path_type = check_path(s);
 
-		if (file_status.st_mode & S_IFDIR) {
-			printf("Directory!\n");
-			ret_code = fail;
-		}
-		else if (file_status.st_mode & S_IFREG) {
-			printf("File!\n");
-			ret_code = ok;
-		}
-		else {
-			printf("Error: Not a file or directory.\n");
-			ret_code = fail;
-		}
+	if (path_type == directory) {
+		ret_code = fail; //Add later.
+	}
+	else if (path_type == file) {
+		ret_code = ok;
 	}
 	else {
-		printf("Error: Not a file or directory.\n");
 		ret_code = fail;
 	}
 
@@ -124,6 +134,7 @@ int add_tag_state(const char* s) {
 
 int add_files_selected_state(const char* s) {
 	printf("add files.\n");
+
 	return ok;
 }
 
