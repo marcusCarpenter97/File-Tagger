@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -58,6 +59,7 @@ int verify_input(void) {
 	}
 }
 
+/* Deprecated. */
 int waiting_for_input_state(const char* s) {
 	printf("waiting for input.\n%s\n",s);
 	if (strcmp(s, PROGRAMME_NAME) == 0) {
@@ -66,9 +68,25 @@ int waiting_for_input_state(const char* s) {
 	return fail;
 }
 
+/*
+ * PROBLEM: switch only accepts ints.
+ * SOLUTION 1: use if else chain and hard code values.
+ * SOLUTION 2: create array with values, lookup index in O(N) time max, then use index in switch case.
+ * TODO: implement both and use profiler to select the best, start with SOLUTION 1.
+ * */
 int select_option_state(const char* s) {
 	printf("select option.\n");
-	return ok;
+	
+	int ret_code;
+
+	if (strcmp(s, "-a") == 0) {
+		ret_code = ok;	
+	}
+	else {
+		ret_code = fail;
+	}
+
+	return ret_code;
 }
 
 /*--------------
@@ -77,7 +95,31 @@ int select_option_state(const char* s) {
 
 int add_tag_state(const char* s) {
 	printf("add tag.\n");
-	return ok;
+	
+	int ret_code;
+	struct stat file_status;	
+	
+	if (stat(s,&file_status) == 0) {
+
+		if (file_status.st_mode & S_IFDIR) {
+			printf("Directory!\n");
+			ret_code = fail;
+		}
+		else if (file_status.st_mode & S_IFREG) {
+			printf("File!\n");
+			ret_code = ok;
+		}
+		else {
+			printf("Error: Not a file or directory.\n");
+			ret_code = fail;
+		}
+	}
+	else {
+		printf("Error: Not a file or directory.\n");
+		ret_code = fail;
+	}
+
+	return ret_code;
 }
 
 int add_files_selected_state(const char* s) {

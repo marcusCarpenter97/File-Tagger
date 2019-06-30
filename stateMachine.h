@@ -26,7 +26,7 @@ struct transition {
 
 extern struct transition state_transitions[];
 
-#define START_STATE waiting_for_input
+#define START_STATE select_option 
 #define EXIT_STATE add_tags
 
 #define PROGRAMME_NAME "./tag"

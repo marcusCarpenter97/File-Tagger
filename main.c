@@ -2,11 +2,11 @@
 #include "stateMachine.h"
 #include "inputStack.h"
 
-int initialize_stack(int stack_size, char* stack_items[]) {
+void initialize_stack(int stack_size, char* stack_items[]) {
 
 	int stack_index;
-
-	for (stack_index = stack_size - 1; stack_index >= 0; stack_index--) {
+	/* Add command line arguments in reverse order to stack without adding the programmes name. */
+	for (stack_index = stack_size - 1; stack_index > 0; stack_index--) {
 		push(stack_items[stack_index]);
 	}
 }
