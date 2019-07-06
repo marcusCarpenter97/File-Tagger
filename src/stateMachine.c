@@ -40,11 +40,19 @@ int verify_input(void) {
 	enum state_codes cur_state = START_STATE;
 	enum ret_codes ret_code;
 	int (* state_func) (const char* s);
-	
+	const char* poped_item;
+
 	while (1) {
 		state_func = state[cur_state];
 		
-		/* Give next item in the stack as parameter to state function. */
+		poped_item = pop();
+	
+		/* If a stack related error occurs and cur_state requires a parameter (e.g. not a final state) exit with error. */	
+		if (strcpm(poped_item, "Error:") == 0 && !is_final_states()) {
+			printf("%s", poped_item);
+			exit(EXIT_FAILURE);
+		}
+
 		ret_code = state_func(pop());
 
 		if (ret_code == fail) {
