@@ -5,7 +5,8 @@ int verify_input(void);
 int move_to_next_state(unsigned int cur_state, unsigned int ret_code);
 
 /* Helper function */
-int check_path();
+int check_path(const char* string);
+int is_tag(const char* string); /* Depreceted. */
 
 int waiting_for_input_state(const char* s); /* Depreceted. */
 int select_option_state(const char* s);
