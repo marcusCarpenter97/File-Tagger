@@ -33,7 +33,7 @@ const char* pop() {
 	}
 	else {
 		printf("Error: could not pop input_stack because it is empty.\n");
-		exit(EXIT_FAILURE);
+		return "error";
 	}
 }
 
