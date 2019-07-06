@@ -33,7 +33,7 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	}
 
 	/* Could not move to next state. */
-	return -1;
+	return -1; //If this is returned the programme will crash!
 }
 
 int verify_input(void) {
