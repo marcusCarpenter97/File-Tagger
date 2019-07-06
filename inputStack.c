@@ -1,4 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "inputStack.h"
+
+int top = EMPTY;
 
 int is_empty() {
 	if (top == EMPTY) {
@@ -28,7 +32,7 @@ const char* pop() {
 		return input_stack[top--];
 	}
 	else {
-		printf("Error: could not pop input_stack because it is empty.\n");
+		return "Error: could not pop input_stack because it is empty.\n";
 	}
 }
 
@@ -38,6 +42,6 @@ void push(const char* item) {
 		input_stack[++top] = item;
 	}
 	else {
-		printf("Error: could not push input_stack because it is full.\n");
+		return "Error: could not push to input_stack because it is full.\n";
 	}
 }
