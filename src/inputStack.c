@@ -32,17 +32,18 @@ const char* pop() {
 		return input_stack[top--];
 	}
 	else {
-		return "Error: could not pop input_stack because it is empty.\n";
+		printf("Error: could not pop input_stack because it is empty.\n");
+		exit(EXIT_FAILURE);
 	}
 }
 
-void push(const char* item) {
+int push(const char* item) {
 	
 	if (!is_full()) {
 		input_stack[++top] = item;
 	}
 	else {
 		printf("Error: could not push to input_stack because it is full.\n");
-		return exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 }

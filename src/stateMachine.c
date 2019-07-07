@@ -33,30 +33,18 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	}
 
 	/* Could not move to next state. */
-	return -1; //If this is returned the programme will crash!
-}
-
-int is_final_state(enum state_codes state_to_check) {
-	return 0;
+	return -1;
 }
 
 int verify_input(void) {
 	enum state_codes cur_state = START_STATE;
 	enum ret_codes ret_code;
 	int (* state_func) (const char* s);
-	const char* poped_item;
-
+	
 	while (1) {
 		state_func = state[cur_state];
 		
-		poped_item = pop();
-	
-		/* If a stack related error occurs and cur_state requires a parameter (e.g. not a final state) exit with error. */	
-		if (strcmp(poped_item, "Error:") == 0 && !is_final_state(cur_state)) {
-			printf("%s", poped_item);
-			exit(EXIT_FAILURE);
-		}
-
+		/* Give next item in the stack as parameter to state function. */
 		ret_code = state_func(pop());
 
 		if (ret_code == fail) {
@@ -78,26 +66,6 @@ int waiting_for_input_state(const char* s) {
 		return ok;
 	}
 	return fail;
-}
-
-/* Check whether a string is a path to a directory or a file. */
-int check_path(const char* string) {
-
-	struct stat file_status;
-
-	if (stat(string,&file_status) == 0) {
-
-		if (file_status.st_mode & S_IFDIR) {
-			printf("Directory!\n");
-			return directory;
-		}
-		if (file_status.st_mode & S_IFREG) {
-			printf("File!\n");
-			return file;
-		}
-	}
-		printf("Error: Not a file or directory.\n");
-		return invalid_path;
 }
 
 /*
@@ -129,15 +97,25 @@ int add_tag_state(const char* s) {
 	printf("add tag.\n");
 	
 	int ret_code;
-	int path_type = check_path(s);
+	struct stat file_status;	
+	
+	if (stat(s,&file_status) == 0) {
 
-	if (path_type == directory) {
-		ret_code = fail; //Add later.
-	}
-	else if (path_type == file) {
-		ret_code = ok;
+		if (file_status.st_mode & S_IFDIR) {
+			printf("Directory!\n");
+			ret_code = fail;
+		}
+		else if (file_status.st_mode & S_IFREG) {
+			printf("File!\n");
+			ret_code = ok;
+		}
+		else {
+			printf("Error: Not a file or directory.\n");
+			ret_code = fail;
+		}
 	}
 	else {
+		printf("Error: Not a file or directory.\n");
 		ret_code = fail;
 	}
 
@@ -146,7 +124,6 @@ int add_tag_state(const char* s) {
 
 int add_files_selected_state(const char* s) {
 	printf("add files.\n");
-
 	return ok;
 }
 

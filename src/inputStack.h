@@ -12,6 +12,6 @@ int is_empty();
 int is_full();
 const char* peek();
 const char* pop();
-void push(const char* item);
+int push(const char* item);
 
 #endif /* INPUTSTACK_H */
