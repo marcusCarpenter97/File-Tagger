@@ -1,6 +1,6 @@
 CC= gcc
 CFLAGS+= -Wall -g
-VPATH= ../src
+VPATH= src
 
 tag : main.o stateMachine.o inputStack.o
 	$(CC) $(CFLAGS) -o tag main.o stateMachine.o inputStack.o
