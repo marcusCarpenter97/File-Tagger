@@ -5,6 +5,8 @@
 #include "stateMachine.h"
 #include "inputStack.h"
 
+enum state_codes final_states[] = {add_tags_selected};
+
 int (* state[])(const char* s) = 
 	{waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state, add_tags_state};
 
@@ -36,6 +38,16 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	return -1; //If this is returned the programme will crash!
 }
 
+int is_final_state(enum state_codes state_to_check) {
+	
+	for (int i = 0; i < sizeof(final_states)/sizeof(final_states[0]); i++) {
+		if (state_to_check == final_states[i]) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int verify_input(void) {
 	enum state_codes cur_state = START_STATE;
 	enum ret_codes ret_code;
@@ -48,12 +60,12 @@ int verify_input(void) {
 		poped_item = pop();
 	
 		/* If a stack related error occurs and cur_state requires a parameter (e.g. not a final state) exit with error. */	
-		if (strcpm(poped_item, "Error:") == 0 && !is_final_states()) {
+		if (strcmp(poped_item, "error") == 0 && !is_final_state(cur_state)) {
 			printf("%s", poped_item);
 			exit(EXIT_FAILURE);
 		}
 
-		ret_code = state_func(pop());
+		ret_code = state_func(poped_item);
 
 		if (ret_code == fail) {
 			printf("Invalid input.\n");
@@ -74,6 +86,25 @@ int waiting_for_input_state(const char* s) {
 		return ok;
 	}
 	return fail;
+}
+
+int is_string_ascii(const char* string) {
+
+	char zero_ascii = '0';
+	char nine_ascii = '9';
+	char big_a_ascii = 'A';
+	char big_z_ascii = 'Z';
+	char small_a_ascii = 'a';
+	char small_z_ascii = 'z';
+
+	for (int i = 0; i < strlen(string); i++) {
+		if (!((zero_ascii <= string[i] && string[i] <= nine_ascii) || 
+		    (big_a_ascii <= string[i] && string[i] <= big_z_ascii) || 
+		    (small_a_ascii <= string[i] && string[i] <= small_z_ascii))) {
+			return 0;
+		}
+	}
+	return 1;
 }
 
 /* Check whether a string is a path to a directory or a file. */
@@ -142,15 +173,43 @@ int add_tag_state(const char* s) {
 
 int add_files_selected_state(const char* s) {
 	printf("add files.\n");
+	
+	int ret_code;
+	int path_type = check_path(s);
 
-	return ok;
+	if (path_type == file) {
+		ret_code = repeat;
+	}
+	else if (is_string_ascii(s)) {
+		ret_code = ok;
+	}
+	else {
+		ret_code = fail;
+	}
+
+	return ret_code;
 }
 
 int add_tags_selected_state(const char* s) {
 	printf("tags selected.\n");
-	return ok;
+	
+	int ret_code;
+	
+	if (strcmp(s, "error") == 0) {
+		ret_code = ok;
+		printf("Adding tags...\n");
+	}
+	else if (is_string_ascii(s)) {
+		ret_code = repeat;
+	}
+	else {
+		ret_code = fail;
+	}
+
+	return ret_code;
 }
 
+/* Deprecated */
 int add_tags_state(const char* s) {
 	printf("adding tags.\n");
 	return ok;
