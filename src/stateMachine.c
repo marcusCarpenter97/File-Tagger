@@ -5,24 +5,28 @@
 #include "stateMachine.h"
 #include "inputStack.h"
 
-enum state_codes final_states[] = {add_tags_selected};
+/************************************/
+/* TABLES USED BY THE STATE MACHINE */
+/************************************/
 
+/* END STATES: Array of state codes enums which defines the end states for the state machine. */
+enum state_codes end_states[] = {add_tags_selected};
+
+/* STATE: Array of function pointers containing all state functions in the state machine. */
 int (* state[])(const char* s) = 
-	{waiting_for_input_state, select_option_state, add_tag_state, add_files_selected_state, add_tags_selected_state, add_tags_state};
+	{select_option_state, add_tag_state, add_dirs_selected_state, add_files_selected_state, add_tags_selected_state};
 
+/* STATE TRANSITIONS: Array of transition enums containing all possible state transitions in the state machine. */
 struct transition state_transitions[] = {
-	{waiting_for_input, ok, select_option},
-	{waiting_for_input, fail, waiting_for_input},
 	{select_option, ok, add_tag},
-	{select_option, fail, waiting_for_input},
 	{add_tag, ok, add_files_selected},
-	{add_tag, fail, waiting_for_input},
 	{add_files_selected, ok, add_tags_selected},
 	{add_files_selected, repeat, add_files_selected},
-	{add_files_selected, fail, waiting_for_input},
-	{add_tags_selected, ok, add_tags},
-	{add_tags_selected, repeat, add_tags_selected},
-	{add_tags_selected, fail, waiting_for_input}};
+	{add_tags_selected, repeat, add_tags_selected}};
+
+/***********************/
+/* NON-STATE FUNCTIONS */
+/***********************/
 
 int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 	int num_transitions = sizeof(state_transitions) / sizeof(state_transitions[0]);
@@ -40,15 +44,59 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
 
 int is_final_state(enum state_codes state_to_check) {
 	
-	for (int i = 0; i < sizeof(final_states)/sizeof(final_states[0]); i++) {
-		if (state_to_check == final_states[i]) {
+	for (int i = 0; i < sizeof(end_states)/sizeof(end_states[0]); i++) {
+		if (state_to_check == end_states[i]) {
 			return 1;
 		}
 	}
 	return 0;
 }
 
-int verify_input(void) {
+int is_string_ascii(const char* string) {
+
+	char zero_ascii = '0';
+	char nine_ascii = '9';
+	char big_a_ascii = 'A';
+	char big_z_ascii = 'Z';
+	char small_a_ascii = 'a';
+	char small_z_ascii = 'z';
+
+	for (int i = 0; i < strlen(string); i++) {
+		if (!((zero_ascii <= string[i] && string[i] <= nine_ascii) || 
+		    (big_a_ascii <= string[i] && string[i] <= big_z_ascii) || 
+		    (small_a_ascii <= string[i] && string[i] <= small_z_ascii))) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+/* Find better name. */
+/* Check whether a string is a path to a directory or a file. */
+int check_path(const char* string) {
+
+	struct stat file_status;
+
+	if (stat(string,&file_status) == 0) {
+
+		if (file_status.st_mode & S_IFDIR) {
+			printf("Directory!\n");
+			return directory;
+		}
+		if (file_status.st_mode & S_IFREG) {
+			printf("File!\n");
+			return file;
+		}
+	}
+		printf("Error: Not a file or directory.\n");
+		return invalid_path;
+}
+
+/*******************************/
+/* MAIN STATE MACHINE FUNCTION */
+/*******************************/
+
+int state_machine(void) {
 	enum state_codes cur_state = START_STATE;
 	enum ret_codes ret_code;
 	int (* state_func) (const char* s);
@@ -79,53 +127,6 @@ int verify_input(void) {
 	}
 }
 
-/* Deprecated. */
-int waiting_for_input_state(const char* s) {
-	printf("waiting for input.\n%s\n",s);
-	if (strcmp(s, PROGRAMME_NAME) == 0) {
-		return ok;
-	}
-	return fail;
-}
-
-int is_string_ascii(const char* string) {
-
-	char zero_ascii = '0';
-	char nine_ascii = '9';
-	char big_a_ascii = 'A';
-	char big_z_ascii = 'Z';
-	char small_a_ascii = 'a';
-	char small_z_ascii = 'z';
-
-	for (int i = 0; i < strlen(string); i++) {
-		if (!((zero_ascii <= string[i] && string[i] <= nine_ascii) || 
-		    (big_a_ascii <= string[i] && string[i] <= big_z_ascii) || 
-		    (small_a_ascii <= string[i] && string[i] <= small_z_ascii))) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
-/* Check whether a string is a path to a directory or a file. */
-int check_path(const char* string) {
-
-	struct stat file_status;
-
-	if (stat(string,&file_status) == 0) {
-
-		if (file_status.st_mode & S_IFDIR) {
-			printf("Directory!\n");
-			return directory;
-		}
-		if (file_status.st_mode & S_IFREG) {
-			printf("File!\n");
-			return file;
-		}
-	}
-		printf("Error: Not a file or directory.\n");
-		return invalid_path;
-}
 
 /*
  * PROBLEM: switch only accepts ints.
@@ -148,9 +149,9 @@ int select_option_state(const char* s) {
 	return ret_code;
 }
 
-/*--------------
- *  Add states
- *--------------*/
+/******************/
+/* ADD TAG STATES */
+/******************/
 
 int add_tag_state(const char* s) {
 	printf("add tag.\n");
@@ -190,6 +191,10 @@ int add_files_selected_state(const char* s) {
 	return ret_code;
 }
 
+int add_dirs_selected_state(const char* s) {
+	return fail;
+}
+
 int add_tags_selected_state(const char* s) {
 	printf("tags selected.\n");
 	
@@ -209,8 +214,3 @@ int add_tags_selected_state(const char* s) {
 	return ret_code;
 }
 
-/* Deprecated */
-int add_tags_state(const char* s) {
-	printf("adding tags.\n");
-	return ok;
-}
