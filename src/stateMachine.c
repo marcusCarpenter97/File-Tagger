@@ -18,22 +18,26 @@ int (* state[])(const char* s) =
 
 /* STATE TRANSITIONS: Array of transition enums containing all possible state transitions in the state machine. */
 struct transition state_transitions[] = {
-	{select_option, ok, add_tag},
-	{add_tag, ok, add_files_selected},
-	{add_files_selected, ok, add_tags_selected},
-	{add_files_selected, repeat, add_files_selected},
-	{add_tags_selected, repeat, add_tags_selected}};
+	{select_option, add, add_tag},
+	{add_tag, path_to_file, add_files_selected},
+	{add_tag, path_to_dir, add_dirs_selected},
+	{add_files_selected, tag_name, add_tags_selected},
+	{add_files_selected, path_to_file, add_files_selected},
+	{add_dirs_selected, tag_name, add_tags_selected},
+	{add_dirs_selected, path_to_dir, add_dirs_selected},
+	{add_tags_selected, tag_name, add_tags_selected}};
 
 /***********************/
 /* NON-STATE FUNCTIONS */
 /***********************/
 
-int move_to_next_state(unsigned int cur_state, unsigned int ret_code) {
+int move_to_next_state(unsigned int cur_state, unsigned int next_transition) {
 	int num_transitions = sizeof(state_transitions) / sizeof(state_transitions[0]);
 
 	/* Iterate through all states until the current state and its return code are found. */
 	for (int trans_count = 0; trans_count < num_transitions; trans_count++) {
-		if (state_transitions[trans_count].start_state == cur_state && state_transitions[trans_count].ret_code == ret_code) {
+		if (state_transitions[trans_count].start_state == cur_state && 
+				state_transitions[trans_count].next_transition == next_transition) {
 			return state_transitions[trans_count].dest_state;
 		}
 	}
@@ -73,7 +77,7 @@ int is_string_ascii(const char* string) {
 
 /* Find better name. */
 /* Check whether a string is a path to a directory or a file. */
-int check_path(const char* string) {
+int check_path_type(const char* string) {
 
 	struct stat file_status;
 
@@ -98,7 +102,7 @@ int check_path(const char* string) {
 
 int state_machine(void) {
 	enum state_codes cur_state = START_STATE;
-	enum ret_codes ret_code;
+	enum transition_values next_transition;
 	int (* state_func) (const char* s);
 	const char* poped_item;
 
@@ -113,9 +117,9 @@ int state_machine(void) {
 			exit(EXIT_FAILURE);
 		}
 
-		ret_code = state_func(poped_item);
+		next_transition = state_func(poped_item);
 
-		if (ret_code == fail) {
+		if (next_transition == fail) {
 			printf("Invalid input.\n");
 			exit(EXIT_FAILURE);
 		}
@@ -123,7 +127,7 @@ int state_machine(void) {
 		if (cur_state == EXIT_STATE) {	
 			exit(EXIT_SUCCESS);
 		}
-		cur_state = move_to_next_state(cur_state, ret_code);
+		cur_state = move_to_next_state(cur_state, next_transition);
 	}
 }
 
@@ -137,16 +141,16 @@ int state_machine(void) {
 int select_option_state(const char* s) {
 	printf("select option.\n");
 	
-	int ret_code;
+	int next_transition;
 
 	if (strcmp(s, "-a") == 0) {
-		ret_code = ok;	
+		next_transition = add;	
 	}
 	else {
-		ret_code = fail;
+		next_transition = fail;
 	}
 
-	return ret_code;
+	return next_transition;
 }
 
 /******************/
@@ -156,39 +160,39 @@ int select_option_state(const char* s) {
 int add_tag_state(const char* s) {
 	printf("add tag.\n");
 	
-	int ret_code;
-	int path_type = check_path(s);
+	int next_transition;
+	int path_type = check_path_type(s);
 
 	if (path_type == directory) {
-		ret_code = fail; //Add later.
+		next_transition = path_to_dir;
 	}
 	else if (path_type == file) {
-		ret_code = ok;
+		next_transition = path_to_file;
 	}
 	else {
-		ret_code = fail;
+		next_transition = fail;
 	}
 
-	return ret_code;
+	return next_transition;
 }
 
 int add_files_selected_state(const char* s) {
 	printf("add files.\n");
 	
-	int ret_code;
-	int path_type = check_path(s);
+	int next_transition;
+	int path_type = check_path_type(s);
 
 	if (path_type == file) {
-		ret_code = repeat;
+		next_transition = path_to_file;
 	}
 	else if (is_string_ascii(s)) {
-		ret_code = ok;
+		next_transition = tag_name;
 	}
 	else {
-		ret_code = fail;
+		next_transition = fail;
 	}
 
-	return ret_code;
+	return next_transition;
 }
 
 int add_dirs_selected_state(const char* s) {
@@ -198,19 +202,19 @@ int add_dirs_selected_state(const char* s) {
 int add_tags_selected_state(const char* s) {
 	printf("tags selected.\n");
 	
-	int ret_code;
+	int next_transition;
 	
 	if (strcmp(s, "error") == 0) {
-		ret_code = ok;
+		next_transition = end;
 		printf("Adding tags...\n");
 	}
 	else if (is_string_ascii(s)) {
-		ret_code = repeat;
+		next_transition = tag_name;
 	}
 	else {
-		ret_code = fail;
+		next_transition = fail;
 	}
 
-	return ret_code;
+	return next_transition;
 }
 

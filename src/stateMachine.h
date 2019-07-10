@@ -24,11 +24,11 @@ enum state_codes {select_option, add_tag, add_dirs_selected, add_files_selected,
 
 extern enum state_codes final_states[];
 
-enum ret_codes {ok, fail, repeat};
+enum transition_values {add, path_to_file, path_to_dir, type, tag_name, type_name, del, recursive, search, no_tag, tag_only, fail, end};
 
 struct transition {
 	enum state_codes start_state;
-	enum ret_codes ret_code;
+	enum transition_values next_transition;
 	enum state_codes dest_state;
 };
 
