@@ -16,7 +16,7 @@ int add_dirs_selected_state(const char* s);
 int add_tags_selected_state(const char* s);
 
 /* Data structures */
-extern int (* state[])(const char* s); /* Array of function pointers where all functions take a cons char* as a parameter. */
+extern int (* state[])(const char* s);
 
 enum path_types {directory, file, invalid_path};
 

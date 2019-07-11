@@ -196,7 +196,22 @@ int add_files_selected_state(const char* s) {
 }
 
 int add_dirs_selected_state(const char* s) {
-	return fail;
+	printf("add directories.\n");
+
+	int next_transition;
+	int path_type = check_path_type(s);
+	
+	if (path_type == directory) {
+		next_transition = path_to_dir;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+
+	return next_transition;
 }
 
 int add_tags_selected_state(const char* s) {
