@@ -37,8 +37,5 @@ extern struct transition state_transitions[];
 int is_final_state(enum state_codes state_to_check);
 
 #define START_STATE select_option 
-#define EXIT_STATE add_tags_selected
-
-#define PROGRAMME_NAME "./tag"
 
 #endif /* STATEMACHINE_H */

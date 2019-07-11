@@ -124,7 +124,7 @@ int state_machine(void) {
 			exit(EXIT_FAILURE);
 		}
 
-		if (cur_state == EXIT_STATE) {	
+		if (next_transition == end) {	
 			exit(EXIT_SUCCESS);
 		}
 		cur_state = move_to_next_state(cur_state, next_transition);
