@@ -1,0 +1,5 @@
+#include "../src/stateMachine.h"
+#include "../src/inputStack.h"
+
+#test select_option_to_add_tag
+	fail_unless(select_option_state("-a") == -1, "Meant to fail.");
