@@ -12,9 +12,14 @@ DOT_CHECK=".check"
 CLEAN="clean"
 
 CHOICE="$1"
+EXIT="$2"
 
 if [ "$CHOICE" = "clean" ]; then
 	make clean
+fi
+
+if [ "$EXIT" = "only" ]; then
+	exit 1
 fi
 
 echo "Creating unit tests using checkmk..."
