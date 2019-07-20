@@ -4,3 +4,4 @@ tests/*.c
 a.out
 *.o
 tag
+*_test
