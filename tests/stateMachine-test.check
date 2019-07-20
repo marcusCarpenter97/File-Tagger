@@ -1,5 +1,21 @@
 #include "../src/stateMachine.h"
 #include "../src/inputStack.h"
 
+/* Possible parameters for state machine functions */
+char* add_param = "-a";
+char* path_to_file_param1 = "~/Documents/File Tagger/source/src/main.c";
+char* path_to_file_param2 = "~/Documents/File Tagger/source/src/stateMachine.c";
+char* path_to_dir_param1 = "~/Documents/File Tagger/source/src";
+char* path_to_dir_param2 = "~/Documents/File Tagger/source/tests";
+
+
+
+char* error_msg = "Expected return value: %d - Actual return value: %d";
+
 #test select_option_to_add_tag
-	fail_unless(select_option_state("-a") == -1, "Meant to fail.");
+	int ret_val = select_option_state("-a");
+	fail_unless(ret_val == add, error_msg, add, ret_val);
+
+#test select_option_to_delete_tag
+	int ret_val = select_option_state("-a");
+	fail_unless(ret_val == add, error_msg, add, ret_val);
