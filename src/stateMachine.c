@@ -320,7 +320,17 @@ int delete_tag_state(const char* s) {
 }
 
 int delete_all_tags_state(const char* s) {
-	int next_transition = fail;
+	
+	int next_transition;
+	int path_type = check_path_type(s);
+
+	if (path_type == file) {
+		next_transition = path_to_file;
+	}
+	else if (path_type == directory) {
+		next_transition = path_to_dir;
+	}
+
 	return next_transition;
 }
 
