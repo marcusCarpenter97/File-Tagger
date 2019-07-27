@@ -7,6 +7,7 @@ int move_to_next_state(unsigned int cur_state, unsigned int ret_code);
 /* Helper functions */
 int check_path(const char* string);
 int is_string_ascii(const char* string);
+int is_file_type_valid(const char* string);
 
 /* State functions */
 int select_option_state(const char* s);
@@ -14,13 +15,16 @@ int add_tag_state(const char* s);
 int add_files_selected_state(const char* s);
 int add_dirs_selected_state(const char* s);
 int add_tags_selected_state(const char* s);
+int reading_file_type_state(const char* s);
+int file_type_selected_state(const char* s);
 
 /* Data structures */
 extern int (* state[])(const char* s);
 
 enum path_types {directory, file, invalid_path};
 
-enum state_codes {select_option, add_tag, add_dirs_selected, add_files_selected, add_tags_selected};
+enum state_codes {select_option, add_tag, add_dirs_selected, add_files_selected, add_tags_selected, reading_file_type, 
+	file_type_selected};
 
 extern enum state_codes final_states[];
 

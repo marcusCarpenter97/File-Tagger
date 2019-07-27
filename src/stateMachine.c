@@ -14,7 +14,8 @@ enum state_codes end_states[] = {add_tags_selected};
 
 /* STATE: Array of function pointers containing all state functions in the state machine. */
 int (* state[])(const char* s) = 
-	{select_option_state, add_tag_state, add_dirs_selected_state, add_files_selected_state, add_tags_selected_state};
+	{select_option_state, add_tag_state, add_dirs_selected_state, add_files_selected_state, add_tags_selected_state, 
+		reading_file_type_state, file_type_selected_state};
 
 /* STATE TRANSITIONS: Array of transition enums containing all possible state transitions in the state machine. */
 struct transition state_transitions[] = {
@@ -25,6 +26,10 @@ struct transition state_transitions[] = {
 	{add_files_selected, path_to_file, add_files_selected},
 	{add_dirs_selected, tag_name, add_tags_selected},
 	{add_dirs_selected, path_to_dir, add_dirs_selected},
+	{add_dirs_selected, type, reading_file_type},
+	{reading_file_type, type_name, file_type_selected},
+	{file_type_selected, type_name, file_type_selected},
+	{file_type_selected, tag_name, add_tags_selected},
 	{add_tags_selected, tag_name, add_tags_selected}};
 
 /***********************/
@@ -56,6 +61,20 @@ int is_final_state(enum state_codes state_to_check) {
 	return 0;
 }
 
+/* Only accepts png and jpeg. TODO: Add more types and improve how the checks are made. */
+int is_file_type_valid(const char* string) {
+	if (strcmp(string, "png") == 0) {
+		return 1;
+	}
+	else if (strcmp(string, "jpeg") == 0) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+/* Change name to is_tag_valid and create regex to validate tag names. */
 int is_string_ascii(const char* string) {
 
 	char zero_ascii = '0';
@@ -203,6 +222,41 @@ int add_dirs_selected_state(const char* s) {
 	
 	if (path_type == directory) {
 		next_transition = path_to_dir;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else if (strcmp(s, "-t") == 0) {
+		next_transition = type;
+	}
+	else {
+		next_transition = fail;
+	}
+
+	return next_transition;
+}
+
+int reading_file_type_state(const char* s) {
+	printf("reading file types.\n");
+
+	int next_transition;
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	return next_transition;
+}
+
+int file_type_selected_state(const char* s) {
+	printf("file type selected.\n");
+
+	int next_transition;
+
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
