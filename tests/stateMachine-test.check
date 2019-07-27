@@ -12,8 +12,8 @@ char* path_to_file_param2 = "/home/marcus/Documents/File Tagger/source/src/state
 char* path_to_dir_param1 = "/home/marcus/Documents/File Tagger/source/src";
 char* path_to_dir_param2 = "/home/marcus/Documents/File Tagger/source/tests";
 char* select_param = "-s";
-char* type_name_param1 = "type1";
-char* type_name_param2 = "type2";
+char* type_name_param1 = "png";
+char* type_name_param2 = "jpeg";
 char* recursive_param = "-r";
 char* no_tag_param = "-n";
 char* tag_only_param = "-tg";
@@ -52,6 +52,22 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 #test add_dirs_selected_to_add_dirs_selected
 	int ret_val = add_dirs_selected_state(path_to_dir_param1);
 	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test add_dirs_selected_to_reading_file_type
+	int ret_val = add_dirs_selected_state(type_param);
+	fail_unless(ret_val == type, error_msg, type, ret_val);
+
+#test reading_file_type_to_file_type_selected
+	int ret_val = reading_file_type_state(type_name_param1);
+	fail_unless(ret_val == type_name, error_msg, type_name, ret_val);
+
+#test file_type_selected_to_add_tags_selected
+	int ret_val = file_type_selected_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test file_type_selected_to_file_type_selected
+	int ret_val = file_type_selected_state(type_name_param2);
+	fail_unless(ret_val == type_name, error_msg, type_name, ret_val);
 
 #test add_tags_selected_to_add_tags_selected
 	int ret_val = add_tags_selected_state(tag_param2);
