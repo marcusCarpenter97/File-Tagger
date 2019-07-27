@@ -15,7 +15,8 @@ enum state_codes end_states[] = {add_tags_selected};
 /* STATE: Array of function pointers containing all state functions in the state machine. */
 int (* state[])(const char* s) = 
 	{select_option_state, add_tag_state, add_dirs_selected_state, add_files_selected_state, add_tags_selected_state, 
-		reading_file_type_state, file_type_selected_state};
+		reading_file_type_state, file_type_selected_state, delete_tag_state, delete_all_tags_state, delete_files_selected_state, 
+		delete_dirs_selected_state, delete_all_files_selected_state, delete_all_dirs_selected_state, delete_tags_selected_state};
 
 /* STATE TRANSITIONS: Array of transition enums containing all possible state transitions in the state machine. */
 struct transition state_transitions[] = {
