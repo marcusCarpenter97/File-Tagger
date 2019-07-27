@@ -393,7 +393,21 @@ int delete_all_files_selected_state(const char* s) {
 }
 
 int delete_all_dirs_selected_state(const char* s) {
-	int next_transition = fail;
+	
+	int next_transition;
+	int path_type = check_path_type(s);
+
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Deleting tags...\n");
+	}
+	else if (path_type == directory) {
+		next_transition = path_to_dir;
+	}
+	else {
+		next_transition = fail;
+	}
+
 	return next_transition;
 }
 
