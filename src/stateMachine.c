@@ -103,11 +103,9 @@ int check_path_type(const char* string) {
 	if (stat(string,&file_status) == 0) {
 
 		if (file_status.st_mode & S_IFDIR) {
-			printf("Directory!\n");
 			return directory;
 		}
 		if (file_status.st_mode & S_IFREG) {
-			printf("File!\n");
 			return file;
 		}
 	}
@@ -158,7 +156,6 @@ int state_machine(void) {
  * TODO: implement both and use profiler to select the best, start with SOLUTION 1.
  * */
 int select_option_state(const char* s) {
-	printf("select option.\n");
 	
 	int next_transition;
 
@@ -177,7 +174,6 @@ int select_option_state(const char* s) {
 /******************/
 
 int add_tag_state(const char* s) {
-	printf("add tag.\n");
 	
 	int next_transition;
 	int path_type = check_path_type(s);
@@ -196,7 +192,6 @@ int add_tag_state(const char* s) {
 }
 
 int add_files_selected_state(const char* s) {
-	printf("add files.\n");
 	
 	int next_transition;
 	int path_type = check_path_type(s);
@@ -215,7 +210,6 @@ int add_files_selected_state(const char* s) {
 }
 
 int add_dirs_selected_state(const char* s) {
-	printf("add directories.\n");
 
 	int next_transition;
 	int path_type = check_path_type(s);
@@ -237,7 +231,6 @@ int add_dirs_selected_state(const char* s) {
 }
 
 int reading_file_type_state(const char* s) {
-	printf("reading file types.\n");
 
 	int next_transition;
 	
@@ -251,7 +244,6 @@ int reading_file_type_state(const char* s) {
 }
 
 int file_type_selected_state(const char* s) {
-	printf("file type selected.\n");
 
 	int next_transition;
 
@@ -269,7 +261,6 @@ int file_type_selected_state(const char* s) {
 }
 
 int add_tags_selected_state(const char* s) {
-	printf("tags selected.\n");
 	
 	int next_transition;
 	
@@ -285,5 +276,37 @@ int add_tags_selected_state(const char* s) {
 	}
 
 	return next_transition;
+}
+
+/*********************/
+/* DELETE TAG STATES */
+/*********************/
+
+int delete_tag_state(const char* s) {
+	return fail;
+}
+
+int delete_all_tags_state(const char* s) {
+	return fail;
+}
+
+int delete_files_selected_state(const char* s) {
+	return fail;
+}
+
+int delete_dirs_selected_state(const char* s) {
+	return fail;
+}
+
+int delete_all_files_selected_state(const char* s) {
+	return fail;
+}
+
+int delete_all_dirs_selected_state(const char* s) {
+	return fail;
+}
+
+int delete_tags_selected_state(const char* s) {
+	return fail;
 }
 

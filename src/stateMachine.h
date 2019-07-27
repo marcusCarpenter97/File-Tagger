@@ -17,6 +17,13 @@ int add_dirs_selected_state(const char* s);
 int add_tags_selected_state(const char* s);
 int reading_file_type_state(const char* s);
 int file_type_selected_state(const char* s);
+int delete_tag_state(const char* s);
+int delete_all_tags_state(const char* s);
+int delete_files_selected_state(const char* s);
+int delete_dirs_selected_state(const char* s);
+int delete_all_files_selected_state(const char* s);
+int delete_all_dirs_selected_state(const char* s);
+int delete_tags_selected_state(const char* s);
 
 /* Data structures */
 extern int (* state[])(const char* s);
