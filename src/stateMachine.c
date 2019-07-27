@@ -10,7 +10,7 @@
 /************************************/
 
 /* END STATES: Array of state codes enums which defines the end states for the state machine. */
-enum state_codes end_states[] = {add_tags_selected};
+enum state_codes end_states[] = {add_tags_selected, delete_all_files_selected, delete_all_dirs_selected, delete_tags_selected};
 
 /* STATE: Array of function pointers containing all state functions in the state machine. */
 int (* state[])(const char* s) = 
