@@ -31,7 +31,19 @@ struct transition state_transitions[] = {
 	{reading_file_type, type_name, file_type_selected},
 	{file_type_selected, type_name, file_type_selected},
 	{file_type_selected, tag_name, add_tags_selected},
-	{add_tags_selected, tag_name, add_tags_selected}};
+	{add_tags_selected, tag_name, add_tags_selected},
+	{delete_tag, tag, delete_tags_selected},
+	{delete_tag, path_to_filed, delete_files_selected},
+	{delete_tag, path_to_dir, delete_dirs_selected},
+	{delete_all_tags, path_to_file, delete_all_files_selected},
+	{delete_all_tags, path_to_dir, delete_all_dirs_selected},
+	{delete_files_selected, path_to_file, delete_files_selected},
+	{delete_files_selected, tag, delete_tags_selected},
+	{delete_dirs_selected, path_to_dir, delete_dirs_selected},
+	{delete_dirs_selected, tag, delete_tags_selected},
+	{delete_all_files_selected, path_to_file, delete_all_files_selected},
+	{delete_all_dirs_selected, path_to_dir, delete_all_dirs_selected},
+	{delete_tags_selected, tag, delete_tags_selected};
 
 /***********************/
 /* NON-STATE FUNCTIONS */
