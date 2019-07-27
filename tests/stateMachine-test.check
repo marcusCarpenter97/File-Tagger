@@ -90,15 +90,15 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
 
 #test delete_tag_to_delete_dirs_selected
-	int ret_val = delete_tag(path_to_dir_param1);
+	int ret_val = delete_tag_state(path_to_dir_param1);
 	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
 
 #test delete_all_tags_to_delete_all_files_selected
-	int ret_val = delete_all_tags(path_to_file_param1);
+	int ret_val = delete_all_tags_state(path_to_file_param1);
 	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
 
 #test delete_all_tags_to_delete_all_dirs_selected
-	int ret_val = delete_all_tags(path_to_dir_param1);
+	int ret_val = delete_all_tags_state(path_to_dir_param1);
 	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
 
 #test delete_files_selected_to_delete_files_selected
@@ -106,7 +106,7 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
 
 #test delete_files_selected_to_delete_tags_selected
-	int ret_val = delete_files_selected(tag_param1);
+	int ret_val = delete_files_selected_state(tag_param1);
 	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
 
 #test delete_dirs_selected_to_delete_dirs_selected
@@ -114,7 +114,7 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
 
 #test delete_dirs_selected_to_delete_tags_selected
-	int ret_val = delete_dirs_selected(tag_param1);
+	int ret_val = delete_dirs_selected_state(tag_param1);
 	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
 
 #test delete_all_files_selected_to_delete_all_files_selected
