@@ -27,7 +27,7 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 
 #test select_option_to_delete_tag
 	int ret_val = select_option_state(delete_param);
-	fail_unless(ret_val == add, error_msg, add, ret_val);
+	fail_unless(ret_val == del, error_msg, del, ret_val);
 
 #test add_tag_to_add_files_selected
 	int ret_val = add_tag_state(path_to_file_param1);
@@ -75,4 +75,68 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 
 #test add_tags_selected_to_end
 	int ret_val = add_tags_selected_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test delete_tag_to_delete_all_tags
+	int ret_val = delete_tag_state(recursive_param);
+	fail_unless(ret_val == recursive, error_msg, recursive, ret_val);
+
+#test delete_tag_to_delete_tags_selected
+	int ret_val = delete_tag_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test delete_tag_to_delete_files_selected
+	int ret_val = delete_tag_state(path_to_file_param1);
+	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
+
+#test delete_tag_to_delete_dirs_selected
+	int ret_val = delete_tag(path_to_dir_param1);
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test delete_all_tags_to_delete_all_files_selected
+	int ret_val = delete_all_tags(path_to_file_param1);
+	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
+
+#test delete_all_tags_to_delete_all_dirs_selected
+	int ret_val = delete_all_tags(path_to_dir_param1);
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test delete_files_selected_to_delete_files_selected
+	int ret_val = delete_files_selected_state(path_to_file_param2);
+	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
+
+#test delete_files_selected_to_delete_tags_selected
+	int ret_val = delete_files_selected(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test delete_dirs_selected_to_delete_dirs_selected
+	int ret_val = delete_dirs_selected_state(path_to_dir_param2);
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test delete_dirs_selected_to_delete_tags_selected
+	int ret_val = delete_dirs_selected(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test delete_all_files_selected_to_delete_all_files_selected
+	int ret_val = delete_all_files_selected_state(path_to_file_param2);
+	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
+
+#test delete_all_files_selected_to_end
+	int ret_val = delete_all_files_selected_state(error); 
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test delete_all_dirs_selected_to_delete_all_dirs_selected
+	int ret_val = delete_all_dirs_selected_state(path_to_dir_param2); 
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test delete_all_dirs_selected_to_end
+	int ret_val = delete_all_dirs_selected_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test delete_tags_selected_to_delete_tags_selected
+	int ret_val = delete_tags_selected_state(tag_param2);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test delete_tags_selected_to_end
+	int ret_val = delete_tags_selected_state(error);
 	fail_unless(ret_val == end, error_msg, end, ret_val);
