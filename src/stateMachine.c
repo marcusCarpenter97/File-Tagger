@@ -330,12 +330,28 @@ int delete_all_tags_state(const char* s) {
 	else if (path_type == directory) {
 		next_transition = path_to_dir;
 	}
+	else {
+		next_transition = fail;
+	}
 
 	return next_transition;
 }
 
 int delete_files_selected_state(const char* s) {
-	int next_transition = fail;
+	
+	int next_transition;
+	int path_type = check_path_type(s);
+
+	if (path_type == file) {
+		next_transition = path_to_file;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+
 	return next_transition;
 }
 
