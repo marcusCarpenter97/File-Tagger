@@ -31,7 +31,8 @@ extern int (* state[])(const char* s);
 enum path_types {directory, file, invalid_path};
 
 enum state_codes {select_option, add_tag, add_dirs_selected, add_files_selected, add_tags_selected, reading_file_type, 
-	file_type_selected};
+	file_type_selected, delete_tag, delete_all_tags, delete_files_selected, delete_dirs_selected, delete_all_files_selected, 
+	delete_all_dirs_selected, delete_tags_selected};
 
 extern enum state_codes final_states[];
 
