@@ -175,6 +175,9 @@ int select_option_state(const char* s) {
 	if (strcmp(s, "-a") == 0) {
 		next_transition = add;	
 	}
+	else if (strcmp(s, "-d") == 0) {
+		next_transition = del; 
+	}
 	else {
 		next_transition = fail;
 	}
@@ -412,7 +415,20 @@ int delete_all_dirs_selected_state(const char* s) {
 }
 
 int delete_tags_selected_state(const char* s) {
+	
 	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Deleting tags...\n");
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
 	return next_transition;
 }
 
