@@ -521,7 +521,20 @@ int search_all_tags_state(const char* s) {
 }
 
 int file_types_selected_state(const char* s) {
+	
 	int next_transition = fail;
+	int path_type = check_path_type(s);
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
 	return next_transition;
 }
 
