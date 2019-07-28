@@ -448,7 +448,20 @@ int delete_tags_selected_state(const char* s) {
 /*********************/
 
 int tags_selected_state(const char* s) {
-	int next_transition = fail;
+	
+	int next_transition;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Deleting tags...\n");
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
 	return next_transition;
 }
 
