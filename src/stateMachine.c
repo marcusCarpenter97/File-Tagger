@@ -182,12 +182,25 @@ int state_machine(void) {
 int select_option_state(const char* s) {
 	
 	int next_transition;
-
+	int path_type = check_path_type(s);
+	
 	if (strcmp(s, "-a") == 0) {
 		next_transition = add;	
 	}
 	else if (strcmp(s, "-d") == 0) {
 		next_transition = del; 
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else if (strcmp(s, "-t") == 0) {
+		next_transition = type;
+	}
+	else if (path_type == directory) {
+		next_transition = path_to_dir;
+	}
+	else if (strcmp(s, "-s") == 0) {
+		next_transition = search; 
 	}
 	else {
 		next_transition = fail;
