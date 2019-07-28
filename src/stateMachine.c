@@ -483,7 +483,7 @@ int search_dir_selected_state(const char* s) {
 	int next_transition = fail;
 	int path_type = check_path_type(s);
 	
-	if (is_file_type_valid(s)) {
+	if (strcmp(s, "-t") == 0) {
 		next_transition = type_name;
 	}
 	else if (path_type == directory) {

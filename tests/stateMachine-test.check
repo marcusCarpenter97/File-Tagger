@@ -175,7 +175,7 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 
 #test search_dirs_selected_to_reading_file_types
 	int ret_val = search_dir_selected_state(type_param);
-	fail_unless(ret_val == type, error_msg, type, ret_val);
+	fail_unless(ret_val == type_name, error_msg, type_name, ret_val);
 
 #test search_dirs_selected_to_tags_selected
 	int ret_val = search_dir_selected_state(tag_param1);
