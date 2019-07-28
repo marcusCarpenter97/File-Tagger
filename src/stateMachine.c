@@ -16,7 +16,9 @@ enum state_codes end_states[] = {add_tags_selected, delete_all_files_selected, d
 int (* state[])(const char* s) = 
 	{select_option_state, add_tag_state, add_dirs_selected_state, add_files_selected_state, add_tags_selected_state, 
 		reading_file_type_state, file_type_selected_state, delete_tag_state, delete_all_tags_state, delete_files_selected_state, 
-		delete_dirs_selected_state, delete_all_files_selected_state, delete_all_dirs_selected_state, delete_tags_selected_state};
+		delete_dirs_selected_state, delete_all_files_selected_state, delete_all_dirs_selected_state, delete_tags_selected_state, 
+		tags_selected_state, reading_file_types_state, search_dir_selected_state, search_all_tags_state, 
+		file_types_selected_state, search_no_tags_state, search_tags_only_state};
 
 /* STATE TRANSITIONS: Array of transition enums containing all possible state transitions in the state machine. */
 struct transition state_transitions[] = {
@@ -43,7 +45,16 @@ struct transition state_transitions[] = {
 	{delete_dirs_selected, tag_name, delete_tags_selected},
 	{delete_all_files_selected, path_to_file, delete_all_files_selected},
 	{delete_all_dirs_selected, path_to_dir, delete_all_dirs_selected},
-	{delete_tags_selected, tag_name, delete_tags_selected}};
+	{delete_tags_selected, tag_name, delete_tags_selected},
+	{tags_selected, tag_name, tags_selected},
+	{reading_file_types, type_name, file_types_selected},
+	{search_dir_selected, path_to_dir, search_dir_selected},
+	{search_dir_selected, type, reading_file_types},
+	{search_dir_selected, tag_name, tags_selected},
+	{search_all_tags, no_tag, search_no_tags},
+	{search_all_tags, tag_only, search_tags_only},
+	{file_types_selected, type_name, file_types_selected},
+	{file_types_selected, tag_name, tags_selected}};
 
 /***********************/
 /* NON-STATE FUNCTIONS */
@@ -424,6 +435,131 @@ int delete_tags_selected_state(const char* s) {
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
+	return next_transition;
+}
+
+/*********************/
+/* SEARCH TAG STATES */
+/*********************/
+
+int tags_selected_state(const char* s) {
+	
+	int next_transition;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
+	return next_transition;
+}
+
+int reading_file_types_state(const char* s) {
+	
+	int next_transition;
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	return next_transition;
+}
+
+int search_dir_selected_state(const char* s) {
+	
+	int next_transition = fail;
+	int path_type = check_path_type(s);
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else if (path_type == directory) {
+		next_transition = path_to_dir;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
+	return next_transition;
+}
+
+int search_all_tags_state(const char* s) {
+
+	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else if (strcmp(s, "-n") == 0) {
+		next_transition = no_tag;
+	}
+	else if (strcmp(s, "-tg") == 0) {
+		next_transition = tag_only;
+	}
+	else {
+		next_transition = fail;
+	}
+
+	return next_transition;
+}
+
+int file_types_selected_state(const char* s) {
+	
+	int next_transition = fail;
+	int path_type = check_path_type(s);
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else if (is_string_ascii(s)) {
+		next_transition = tag_name;
+	}
+	else {
+		next_transition = fail;
+	}
+	
+	return next_transition;
+}
+
+int search_no_tags_state(const char* s) {
+	
+	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else {
+		next_transition = fail;
+	}
+	
+	return next_transition;
+}
+
+int search_tags_only_state(const char* s) {
+	
+	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
 	}
 	else {
 		next_transition = fail;
