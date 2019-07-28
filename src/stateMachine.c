@@ -466,7 +466,15 @@ int tags_selected_state(const char* s) {
 }
 
 int reading_file_types_state(const char* s) {
-	int next_transition = fail;
+	
+	int next_transition;
+	
+	if (is_file_type_valid(s)) {
+		next_transition = type_name;
+	}
+	else {
+		next_transition = fail;
+	}
 	return next_transition;
 }
 
