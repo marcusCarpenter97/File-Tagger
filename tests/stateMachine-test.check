@@ -29,6 +29,22 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	int ret_val = select_option_state(delete_param);
 	fail_unless(ret_val == del, error_msg, del, ret_val);
 
+#test select_option_to_tags_selected
+	int ret_val = select_option_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test select_option_to_reading_file_types
+	int ret_val = select_option_state(type_param);
+	fail_unless(ret_val == type, error_msg, type, ret_val);
+
+#test select_option_to_search_dirs_selected
+	int ret_val = select_option_state(path_to_dir_param1);
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test select_option_to_search_all_tags
+	int ret_val = select_option_state(select_param);
+	fail_unless(ret_val == search, error_msg, search, ret_val);
+
 #test add_tag_to_add_files_selected
 	int ret_val = add_tag_state(path_to_file_param1);
 	fail_unless(ret_val == path_to_file, error_msg, path_to_file, ret_val);
