@@ -539,12 +539,32 @@ int file_types_selected_state(const char* s) {
 }
 
 int search_no_tags_state(const char* s) {
+	
 	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else {
+		next_transition = fail;
+	}
+	
 	return next_transition;
 }
 
 int search_tags_only_state(const char* s) {
+	
 	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else {
+		next_transition = fail;
+	}
+	
 	return next_transition;
 }
 
