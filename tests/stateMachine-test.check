@@ -156,3 +156,55 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 #test delete_tags_selected_to_end
 	int ret_val = delete_tags_selected_state(error);
 	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test tags_selected_to_tags_selected
+	int ret_val = tags_selected_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test tags_selected_to_end
+	int ret_val = tags_selected_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test reading_file_types_to_file_types_selected
+	int ret_val = reading_file_types_state(type_name_param1);
+	fail_unless(ret_val == type_name, error_msg, type_name, ret_val);
+
+#test search_dirs_selected_to_search_dirs_selected
+	int ret_val = search_dirs_selected_state(path_to_dir_param2);
+	fail_unless(ret_val == path_to_dir, error_msg, path_to_dir, ret_val);
+
+#test search_dirs_selected_to_reading_file_types
+	int ret_val = search_dirs_selected_state(type_param);
+	fail_unless(ret_val == type, error_msg, type, ret_val);
+
+#test search_dirs_selected_to_tags_selected
+	int ret_val = search_dirs_selected_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test search_all_tags_to_search_no_tags
+	int ret_val = search_all_tags_state(no_tag_param);
+	fail_unless(ret_val == no_tag, error_msg, no_tag, ret_val);
+
+#test search_all_tags_to_search_tags_only
+	int ret_val = search_all_tags_state(tag_only_param);
+	fail_unless(ret_val == tag_only, error_msg, tag_only, ret_val);
+
+#test search_all_tags_to_end
+	int ret_val = search_all_tags_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test file_types_selected_to_file_types_selected
+	int ret_val = file_types_selected_state(type_name_param1);
+	fail_unless(ret_val == type_name, error_msg, type_name, ret_val);
+
+#test file_types_selected_to_tags_selected
+	int ret_val = file_types_selected_state(tag_param1);
+	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
+
+#test search_no_tags_to_end
+	int ret_val = search_no_tags_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
+
+#test search_tags_only_to_end
+	int ret_val = search_tags_only_state(error);
+	fail_unless(ret_val == end, error_msg, end, ret_val);
