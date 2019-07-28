@@ -453,7 +453,7 @@ int tags_selected_state(const char* s) {
 	
 	if (strcmp(s, "error") == 0) {
 		next_transition = end;
-		printf("Deleting tags...\n");
+		printf("Searching tags...\n");
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
@@ -500,7 +500,23 @@ int search_dir_selected_state(const char* s) {
 }
 
 int search_all_tags_state(const char* s) {
+
 	int next_transition = fail;
+	
+	if (strcmp(s, "error") == 0) {
+		next_transition = end;
+		printf("Searching tags...\n");
+	}
+	else if (strcmp(s, "-n") == 0) {
+		next_transition = no_tag;
+	}
+	else if (strcmp(s, "-tg") == 0) {
+		next_transition = tag_only;
+	}
+	else {
+		next_transition = fail;
+	}
+
 	return next_transition;
 }
 
