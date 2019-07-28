@@ -523,7 +523,6 @@ int search_all_tags_state(const char* s) {
 int file_types_selected_state(const char* s) {
 	
 	int next_transition = fail;
-	int path_type = check_path_type(s);
 	
 	if (is_file_type_valid(s)) {
 		next_transition = type_name;
