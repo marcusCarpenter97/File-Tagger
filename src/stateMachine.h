@@ -24,6 +24,13 @@ int delete_dirs_selected_state(const char* s);
 int delete_all_files_selected_state(const char* s);
 int delete_all_dirs_selected_state(const char* s);
 int delete_tags_selected_state(const char* s);
+int tags_selected_state(const char* s);
+int reading_file_types_state(const char* s);
+int search_dir_selected_state(const char* s);
+int search_all_tags_state(const char* s);
+int file_types_selected_state(const char* s);
+int search_no_tags_state(const char* s);
+int search_tags_only_state(const char* s);
 
 /* Data structures */
 extern int (* state[])(const char* s);
@@ -32,7 +39,8 @@ enum path_types {directory, file, invalid_path};
 
 enum state_codes {select_option, add_tag, add_dirs_selected, add_files_selected, add_tags_selected, reading_file_type, 
 	file_type_selected, delete_tag, delete_all_tags, delete_files_selected, delete_dirs_selected, delete_all_files_selected, 
-	delete_all_dirs_selected, delete_tags_selected};
+	delete_all_dirs_selected, delete_tags_selected, tags_selected, reading_file_types, search_dir_selected, search_all_tags,
+       	file_types_selected, search_no_tags, search_tags_only};
 
 extern enum state_codes final_states[];
 
