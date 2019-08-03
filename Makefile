@@ -12,7 +12,7 @@ OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
 all : tag state_machine_test
 
 tag : $(OBJECTS)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ -lsqlite3
 
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@
