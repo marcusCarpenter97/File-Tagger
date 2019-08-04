@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
 
 	initialize_stack(argc, argv);
 	
-	setup_database();
+	initialize_database();
 
 	state_machine();	
 

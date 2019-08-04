@@ -1,6 +1,7 @@
 #include "databaseManager.h"
 #include <sqlite3.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 char *sql_drop_all_tables = "DROP TABLE IF EXISTS Tag;"
 		      "DROP TABLE IF EXISTS Item;"
@@ -14,7 +15,17 @@ char *sql_enable_foreign_keys = "PRAGMA foreign_keys = ON";
 
 char *db_name = "tag_db.sqlite3";
 
-int setup_database(void) {
+void initialize_database(void) {
+
+	struct stat buffer;
+
+	//Create new database if it does not exist.
+	if (stat(db_name, &buffer) != 0) {
+		create_database();
+	}
+}
+
+int create_database(void) {
 
 	sqlite3 *db_object;
 	
