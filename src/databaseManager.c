@@ -1,7 +1,7 @@
 #include "databaseManager.h"
-#include <sqlite3.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 
 char *sql_drop_all_tables = "DROP TABLE IF EXISTS Tag;"
 		      "DROP TABLE IF EXISTS Item;"
@@ -14,6 +14,19 @@ char *sql_create_all_tables = "CREATE TABLE Tag(Id INTEGER PRIMARY KEY, Name TEX
 char *sql_enable_foreign_keys = "PRAGMA foreign_keys = ON";
 
 char *db_name = "tag_db.sqlite3";
+
+void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object) {
+
+	if (db_ret_code != SQLITE_OK) {
+
+		fprintf(stderr, "SQL error: %s\n", err_msg);
+
+		sqlite3_free(err_msg);
+		sqlite3_close(db_object);
+
+		exit(EXIT_FAILURE);
+	}
+}
 
 void initialize_database(void) {
 
@@ -41,40 +54,13 @@ int create_database(void) {
 	}
 
 	db_return_code = sqlite3_exec(db_object, sql_enable_foreign_keys, 0, 0, &err_msg);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "SQL error: %s\n", err_msg);
-
-		sqlite3_free(err_msg);
-		sqlite3_close(db_object);
-
-		return 1;
-	}
+	exit_on_sql_error(db_return_code, err_msg, db_object);
 	
 	db_return_code = sqlite3_exec(db_object, sql_drop_all_tables, 0, 0, &err_msg);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "SQL error: %s\n", err_msg);
-
-		sqlite3_free(err_msg);
-		sqlite3_close(db_object);
-
-		return 1;
-	}
+	exit_on_sql_error(db_return_code, err_msg, db_object);
 
 	db_return_code = sqlite3_exec(db_object, sql_create_all_tables, 0, 0, &err_msg);
-	
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "SQL error: %s\n", err_msg);
-
-		sqlite3_free(err_msg);
-		sqlite3_close(db_object);
-
-		return 1;
-	}
+	exit_on_sql_error(db_return_code, err_msg, db_object);
 	
 	sqlite3_close(db_object);
 	

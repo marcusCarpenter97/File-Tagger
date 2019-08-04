@@ -1,3 +1,5 @@
+#include <sqlite3.h>
+
 extern char *sql_drop_all_tables;
 
 extern char *sql_create_all_tables;
@@ -10,4 +12,4 @@ char *err_msg;
 
 int create_database(void);
 void initialize_database(void);
-//int exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 db_object);
+void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object);
