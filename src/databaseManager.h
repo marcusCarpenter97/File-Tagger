@@ -1,10 +1,16 @@
 #include <sqlite3.h>
 
-typedef struct sql_prep_stmt_input {
-	char *locations[5];
-	char *tags[5];
-/*	char *types[5];*/
-} db_input;
+#define MAX_TAGS_PER_TRANSACTION 5 //better name
+
+typedef struct { //better name
+	char *paths[MAX_TAGS_PER_TRANSACTION];
+	char *tags[MAX_TAGS_PER_TRANSACTION];
+	int paths_id[MAX_TAGS_PER_TRANSACTION];
+	int tags_id[MAX_TAGS_PER_TRANSACTION];
+	int tag_index;
+	int path_index;
+/*	char *types[MAX_TAGS_PER_TRANSACTION];*/
+} Sql_prep_stmt_input;// sql_prep_stmt_input; //db_input; ???
 
 extern char *sql_drop_all_tables;
 extern char *sql_create_all_tables;
@@ -19,7 +25,13 @@ extern char *db_name;
 
 char *err_msg;
 
-void create_database(void);
+/* Public functions */
 void initialize_database(void);
+void append_path_to_sql_stmt(char* path);
+void append_tag_name_to_sql_stmt(char* tag);
+int add_tags_to_db(void);
+
+/* Private functions */
+void create_database(void);
 void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object);
-void insert_tag(char *tag_name, char *file_location);
+int insert_tags(void);
