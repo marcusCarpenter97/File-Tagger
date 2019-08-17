@@ -33,5 +33,5 @@ int add_tags_to_db(void);
 
 /* Private functions */
 void create_database(void);
-void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object);
+void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object, int err_line, char *err_file);
 int insert_tags(void);

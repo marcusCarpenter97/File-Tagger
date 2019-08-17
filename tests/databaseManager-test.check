@@ -3,13 +3,13 @@
 
 #define RET_VAL_OK EXIT_SUCCESS
 
-char* tag_name1 = "tag name 1";
-char* tag_name2 = "tag name 2";
+const char* tag_name1 = "tag name 1";
+const char* tag_name2 = "tag name 2";
 
-char* path_to_file_param1 = "/home/marcus/Documents/File Tagger/source/src/main.c";
-char* path_to_file_param2 = "/home/marcus/Documents/File Tagger/source/src/stateMachine.c";
-char* path_to_dir_param1 = "/home/marcus/Documents/File Tagger/source/src";
-char* path_to_dir_param2 = "/home/marcus/Documents/File Tagger/source/tests";
+const char* path_to_file_param1 = "/home/marcus/Documents/File Tagger/source/src/main.c";
+const char* path_to_file_param2 = "/home/marcus/Documents/File Tagger/source/src/stateMachine.c";
+const char* path_to_dir_param1 = "/home/marcus/Documents/File Tagger/source/src";
+const char* path_to_dir_param2 = "/home/marcus/Documents/File Tagger/source/tests";
 
 #test insert_one_tag_one_file
 	append_path_to_sql_stmt(path_to_file_param1);

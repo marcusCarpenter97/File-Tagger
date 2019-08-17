@@ -1,5 +1,4 @@
 #include "databaseManager.h"
-
 #include <stdio.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -25,11 +24,11 @@ char *db_name = "tag_db.sqlite3";
 
 Sql_prep_stmt_input sql_prep_stmt_input; 
 
-void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object) {
+void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object, int err_line, char *err_file) {
 
 	if (db_ret_code != SQLITE_OK) {
 
-		fprintf(stderr, "SQL error: %s\n", err_msg);
+		fprintf(stderr, "SQL error: %s on line number %d in file %s\n", err_msg, err_line, err_file);
 
 		sqlite3_free(err_msg);
 		sqlite3_close(db_object);
@@ -64,13 +63,13 @@ void create_database(void) {
 	}
 
 	db_return_code = sqlite3_exec(db_object, sql_enable_foreign_keys, 0, 0, &err_msg);
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 	
 	db_return_code = sqlite3_exec(db_object, sql_drop_all_tables, 0, 0, &err_msg);
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 
 	db_return_code = sqlite3_exec(db_object, sql_create_all_tables, 0, 0, &err_msg);
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 	
 	sqlite3_close(db_object);
 }
@@ -118,13 +117,13 @@ int insert_tags(void) {
 	}
 
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_tag , -1, &sql_insert_into_tag_stmt, 0);
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_item, -1, &sql_insert_into_item_stmt, 0);
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_taggedItem, -1, &sql_insert_into_taggedItem_stmt, 0); 
-	exit_on_sql_error(db_return_code, err_msg, db_object);
+	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
 
 	db_return_code = sqlite3_exec(db_object, "BEGIN TRANSACTION", 0, 0, 0);
 

@@ -30,4 +30,4 @@ $(BUILD_DIR)/databaseManager-test.o : $(TEST_DIR)/databaseManager-test.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm tag state_machine_test $(BUILD_DIR)/*.o $(TEST_DIR)/*.c
+	rm tag state_machine_test database_manager_test $(BUILD_DIR)/*.o $(TEST_DIR)/*.c
