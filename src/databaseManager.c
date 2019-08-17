@@ -1,4 +1,5 @@
 #include "databaseManager.h"
+
 #include <stdio.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -12,20 +13,17 @@ char *sql_create_all_tables = "CREATE TABLE Tag(Id INTEGER PRIMARY KEY, Name TEX
 			      "CREATE TABLE TaggedItem(TagId INTEGER, ItemId INTEGER,"
 			      "FOREIGN KEY(TagId) REFERENCES Tag(Id), FOREIGN KEY(ItemId) REFERENCES Item(Id));";
 
-char *sql_enable_foreign_keys = "PRAGMA foreign_keys = ON";
+char *sql_enable_foreign_keys = "PRAGMA foreign_keys = ON;";
 
 char *sql_insert_into_tag = "INSERT INTO Tag(Name) VALUES(?);";
 
-char *sql_insert_into_item = "INSERT INTO Item(Location) VALUES(?)";
+char *sql_insert_into_item = "INSERT INTO Item(Location) VALUES(?);";
 
-char *sql_insert_into_taggedItem = "INSERT INTO TaggedItem(TagId, ItemId) VALUES(?, ?)";
+char *sql_insert_into_taggedItem = "INSERT INTO TaggedItem(TagId, ItemId) VALUES(?, ?);";
 
 char *db_name = "tag_db.sqlite3";
 
 Sql_prep_stmt_input sql_prep_stmt_input; 
-
-//sql_prep_stmt_input.tag_index = 0;
-//sql_prep_stmt_input.path_index = 0;
 
 void exit_on_sql_error(int db_ret_code, char *err_msg, sqlite3 *db_object) {
 
@@ -105,7 +103,7 @@ int add_tags_to_db(void) {
 	return EXIT_SUCCESS;
 }
 
-int insert_tags(/*char *tag_name, char *file_location*/void) {
+int insert_tags(void) {
 	
 	sqlite3 *db_object;
 	sqlite3_stmt *sql_insert_into_tag_stmt;
@@ -129,18 +127,21 @@ int insert_tags(/*char *tag_name, char *file_location*/void) {
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_item, -1, &sql_insert_into_item_stmt, 0);
 	exit_on_sql_error(db_return_code, err_msg, db_object);
 
-	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_taggedItem, -1, &sql_insert_into_taggedItem_stmt, 0); //sql error
+	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_taggedItem, -1, &sql_insert_into_taggedItem_stmt, 0); 
 	exit_on_sql_error(db_return_code, err_msg, db_object);
 
 	db_return_code = sqlite3_exec(db_object, "BEGIN TRANSACTION", 0, 0, 0);
 
-	for (int next_tag = 0; next_tag < sql_prep_stmt_input.tag_index; next_tag++) {
+	for (int next_tag = 0; next_tag < sql_prep_stmt_input.tag_index; next_tag++) { 
 
 		db_return_code = sqlite3_bind_text(sql_insert_into_tag_stmt, 1, sql_prep_stmt_input.tags[next_tag], -1, SQLITE_TRANSIENT);
 		db_return_code = sqlite3_step(sql_insert_into_tag_stmt);
 
 		int last_row_id = sqlite3_last_insert_rowid(db_object);
 		sql_prep_stmt_input.tags_id[next_tag] = last_row_id;
+	
+		sqlite3_reset(sql_insert_into_tag_stmt);
+		sqlite3_clear_bindings(sql_insert_into_tag_stmt);
 	}	
 
 	for (int next_path = 0; next_path < sql_prep_stmt_input.path_index; next_path++) {
@@ -151,16 +152,22 @@ int insert_tags(/*char *tag_name, char *file_location*/void) {
 
 		int last_row_id = sqlite3_last_insert_rowid(db_object);
 		sql_prep_stmt_input.paths_id[next_path] = last_row_id;
+		
+		sqlite3_reset(sql_insert_into_item_stmt);
+		sqlite3_clear_bindings(sql_insert_into_item_stmt);
 	}	
 	
 	for (int next_tag = 0; next_tag < sql_prep_stmt_input.tag_index; next_tag++) {
 		for (int next_path = 0; next_path < sql_prep_stmt_input.path_index; next_path++) {
-
-			db_return_code = sqlite3_bind_text(
-					sql_insert_into_taggedItem_stmt, 1, sql_prep_stmt_input.tags[next_tag], -1, SQLITE_TRANSIENT);
-			db_return_code = sqlite3_bind_text(
-					sql_insert_into_taggedItem_stmt, 2, sql_prep_stmt_input.paths[next_path], -1, SQLITE_TRANSIENT);
-			db_return_code = sqlite3_step(sql_insert_into_tag_stmt);
+			
+			db_return_code = sqlite3_bind_int(
+					sql_insert_into_taggedItem_stmt, 1, sql_prep_stmt_input.tags_id[next_tag]);
+			db_return_code = sqlite3_bind_int(
+					sql_insert_into_taggedItem_stmt, 2, sql_prep_stmt_input.paths_id[next_path]);
+			db_return_code = sqlite3_step(sql_insert_into_taggedItem_stmt);
+			
+			sqlite3_reset(sql_insert_into_taggedItem_stmt);
+			sqlite3_clear_bindings(sql_insert_into_taggedItem_stmt);
 		}
 	}
 
@@ -178,11 +185,13 @@ int main(void) {
 
 	initialize_database();
 
-//	insert_tag("tagName2", "locationName2");
 	append_tag_name_to_sql_stmt("tagName1");
 	append_path_to_sql_stmt("locationName1");
+	
 	append_tag_name_to_sql_stmt("tagName2");
 	append_path_to_sql_stmt("locationName2");
+
 	insert_tags();
+
 	return 0;
 }
