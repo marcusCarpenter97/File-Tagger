@@ -85,7 +85,8 @@ void append_tag_name_to_sql_stmt(char* tag) { //TODO Check if array is full.
 	sql_prep_stmt_input.tag_index++;
 }
 
-int add_tags_to_db(void) {
+int insert_tags(void) {
+	
 //input:
 //any amount of tags
 //any amount of paths
@@ -99,12 +100,7 @@ int add_tags_to_db(void) {
 //for each tagID in struct
 //  for each itemID in struct
 //   add both IDs to taggedItem
-//finish
-	return EXIT_SUCCESS;
-}
 
-int insert_tags(void) {
-	
 	sqlite3 *db_object;
 	sqlite3_stmt *sql_insert_into_tag_stmt;
 	sqlite3_stmt *sql_insert_into_item_stmt;
@@ -181,17 +177,17 @@ int insert_tags(void) {
 }
 
 //For testing.
-int main(void) {
-
-	initialize_database();
-
-	append_tag_name_to_sql_stmt("tagName1");
-	append_path_to_sql_stmt("locationName1");
-	
-	append_tag_name_to_sql_stmt("tagName2");
-	append_path_to_sql_stmt("locationName2");
-
-	insert_tags();
-
-	return 0;
-}
+//int main(void) {
+//
+//	initialize_database();
+//
+//	append_tag_name_to_sql_stmt("tagName1");
+//	append_path_to_sql_stmt("locationName1");
+//	
+//	append_tag_name_to_sql_stmt("tagName2");
+//	append_path_to_sql_stmt("locationName2");
+//
+//	insert_tags();
+//
+//	return 0;
+//}
