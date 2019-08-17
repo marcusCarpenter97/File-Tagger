@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "stateMachine.h"
 #include "inputStack.h"
+#include "databaseManager.h"
 
 /************************************/
 /* TABLES USED BY THE STATE MACHINE */
@@ -220,9 +221,11 @@ int add_tag_state(const char* s) {
 
 	if (path_type == directory) {
 		next_transition = path_to_dir;
+		append_path_to_sql_stmt(s);
 	}
 	else if (path_type == file) {
 		next_transition = path_to_file;
+		append_path_to_sql_stmt(s);
 	}
 	else {
 		next_transition = fail;
@@ -238,9 +241,11 @@ int add_files_selected_state(const char* s) {
 
 	if (path_type == file) {
 		next_transition = path_to_file;
+		append_path_to_sql_stmt(s);
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
+		append_tag_name_to_sql_stmt(s);
 	}
 	else {
 		next_transition = fail;
@@ -256,9 +261,11 @@ int add_dirs_selected_state(const char* s) {
 	
 	if (path_type == directory) {
 		next_transition = path_to_dir;
+		append_path_to_sql_stmt(s);
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
+		append_tag_name_to_sql_stmt(s);
 	}
 	else if (strcmp(s, "-t") == 0) {
 		next_transition = type;
@@ -292,6 +299,7 @@ int file_type_selected_state(const char* s) {
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
+		append_tag_name_to_sql_stmt(s);
 	}
 	else {
 		next_transition = fail;
@@ -307,9 +315,11 @@ int add_tags_selected_state(const char* s) {
 	if (strcmp(s, "error") == 0) {
 		next_transition = end;
 		printf("Adding tags...\n");
+		insert_tags();
 	}
 	else if (is_string_ascii(s)) {
 		next_transition = tag_name;
+		append_tag_name_to_sql_stmt(s);
 	}
 	else {
 		next_transition = fail;

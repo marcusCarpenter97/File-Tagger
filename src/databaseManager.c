@@ -75,12 +75,12 @@ void create_database(void) {
 	sqlite3_close(db_object);
 }
 
-void append_path_to_sql_stmt(char* path) { //TODO Check if array is full.
+void append_path_to_sql_stmt(const char* path) { //TODO Check if array is full.
 	sql_prep_stmt_input.paths[sql_prep_stmt_input.path_index] = path;
 	sql_prep_stmt_input.path_index++;
 }
 
-void append_tag_name_to_sql_stmt(char* tag) { //TODO Check if array is full.
+void append_tag_name_to_sql_stmt(const char* tag) { //TODO Check if array is full.
 	sql_prep_stmt_input.tags[sql_prep_stmt_input.tag_index] = tag;
 	sql_prep_stmt_input.tag_index++;
 }

@@ -1,5 +1,6 @@
 #include "../src/stateMachine.h"
 #include "../src/inputStack.h"
+#include "../src/databaseManager.h"
 
 /* All possible parameters for state machine functions. */
 char* add_param = "-a";
@@ -89,8 +90,8 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	int ret_val = add_tags_selected_state(tag_param2);
 	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
 
-#test add_tags_selected_to_end
-	int ret_val = add_tags_selected_state(error);
+#test add_tags_selected_to_end 
+	int ret_val = add_tags_selected_state(error); //TODO how to test the end ???
 	fail_unless(ret_val == end, error_msg, end, ret_val);
 
 #test delete_tag_to_delete_all_tags

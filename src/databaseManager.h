@@ -3,8 +3,8 @@
 #define MAX_TAGS_PER_TRANSACTION 5 //better name
 
 typedef struct { //better name
-	char *paths[MAX_TAGS_PER_TRANSACTION];
-	char *tags[MAX_TAGS_PER_TRANSACTION];
+	const char *paths[MAX_TAGS_PER_TRANSACTION];
+	const char *tags[MAX_TAGS_PER_TRANSACTION];
 	int paths_id[MAX_TAGS_PER_TRANSACTION];
 	int tags_id[MAX_TAGS_PER_TRANSACTION];
 	int tag_index;
@@ -27,8 +27,8 @@ char *err_msg;
 
 /* Public functions */
 void initialize_database(void);
-void append_path_to_sql_stmt(char* path);
-void append_tag_name_to_sql_stmt(char* tag);
+void append_path_to_sql_stmt(const char* path);
+void append_tag_name_to_sql_stmt(const char* tag);
 int add_tags_to_db(void);
 
 /* Private functions */

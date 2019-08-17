@@ -1,0 +1,41 @@
+#include "../src/databaseManager.h"
+#include <stdlib.h>
+
+#define RET_VAL_OK EXIT_SUCCESS
+
+char* tag_name1 = "tag name 1";
+char* tag_name2 = "tag name 2";
+
+char* path_to_file_param1 = "/home/marcus/Documents/File Tagger/source/src/main.c";
+char* path_to_file_param2 = "/home/marcus/Documents/File Tagger/source/src/stateMachine.c";
+char* path_to_dir_param1 = "/home/marcus/Documents/File Tagger/source/src";
+char* path_to_dir_param2 = "/home/marcus/Documents/File Tagger/source/tests";
+
+#test insert_one_tag_one_file
+	append_path_to_sql_stmt(path_to_file_param1);
+	append_tag_name_to_sql_stmt(tag_name1);
+	int ret_val = insert_tags();
+	fail_unless(ret_val == RET_VAL_OK);
+
+#test insert_one_tag_many_files
+	append_path_to_sql_stmt(path_to_file_param1);
+	append_path_to_sql_stmt(path_to_dir_param1);
+	append_tag_name_to_sql_stmt(tag_name1);
+	int ret_val = insert_tags();
+	fail_unless(ret_val == RET_VAL_OK);
+
+#test insert_many_tags_one_file
+	append_path_to_sql_stmt(path_to_file_param1);
+	append_tag_name_to_sql_stmt(tag_name1);
+	append_tag_name_to_sql_stmt(tag_name2);
+	int ret_val = insert_tags();
+	fail_unless(ret_val == RET_VAL_OK);
+
+#test insert_many_tags_many_files
+	append_path_to_sql_stmt(path_to_file_param1);
+	append_path_to_sql_stmt(path_to_dir_param1);
+	append_tag_name_to_sql_stmt(tag_name1);
+	append_tag_name_to_sql_stmt(tag_name2);
+	int ret_val = insert_tags();
+	fail_unless(ret_val == RET_VAL_OK);
+

@@ -42,5 +42,6 @@ make
 
 if [ "$CHOICE" = "tests" ]; then
 	./state_machine_test
+	./database_manager_test
 fi
 
