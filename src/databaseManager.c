@@ -20,6 +20,8 @@ char *sql_insert_into_item = "INSERT INTO Item(Location) VALUES(?);";
 
 char *sql_insert_into_taggedItem = "INSERT INTO TaggedItem(TagId, ItemId) VALUES(?, ?);";
 
+char *sql_select_all_locations_for_tag = "SELECT Item.Location, Tag.Name FROM Item JOIN TaggedItem ON TaggedItem.itemID = Item.ID JOIN Tag ON TaggedItem.tagID = Tag.ID WHERE Tag.Name = (?);";
+
 char *db_name = "tag_db.sqlite3";
 
 Sql_prep_stmt_input sql_prep_stmt_input; 
@@ -171,6 +173,46 @@ int insert_tags(void) {
 	sqlite3_finalize(sql_insert_into_item_stmt);
 	sqlite3_close(db_object);
 
+	return EXIT_SUCCESS;
+}
+
+int select_all_locations_for_tag(const char* tag) {
+	
+	sqlite3 *db_object;
+	sqlite3_stmt *sql_select_all_locations_for_tag_stmt;
+	
+	err_msg = 0;
+	int db_return_code = sqlite3_open(db_name, &db_object);
+
+	if (db_return_code != SQLITE_OK) {
+
+		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
+		sqlite3_close(db_object);
+
+		return EXIT_FAILURE;
+	}
+	
+	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations_for_tag, -1, &sql_select_all_locations_for_tag_stmt, 0);
+	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
+
+	db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, tag, -1, SQLITE_TRANSIENT);
+
+	do {
+		db_return_code = sqlite3_step(sql_select_all_locations_for_tag_stmt);
+
+		if (db_return_code == SQLITE_ROW) {
+
+			printf("%s: ", sqlite3_column_text(sql_select_all_locations_for_tag_stmt, 0));
+			printf("%s\n", sqlite3_column_text(sql_select_all_locations_for_tag_stmt, 1));
+
+		}
+
+	} while (db_return_code != SQLITE_DONE);
+
+	return EXIT_SUCCESS;
+}
+
+int delete_tags(void) {
 	return EXIT_SUCCESS;
 }
 

@@ -47,3 +47,13 @@ void setup(void) { //TODO does not work !!!
 	int ret_val = insert_tags();
 	fail_unless(ret_val == RET_VAL_OK);
 
+#test select_all_files_for_one_tag
+	initialize_database();
+	int ret_val = select_all_locations_for_tag(tag_name1);
+	fail_unless(ret_val == RET_VAL_OK);
+	
+#test select_all_files_for_many_tags
+	initialize_database();
+	int ret_val = select_all_locations_for_tag(tag_name2);
+	fail_unless(ret_val == RET_VAL_OK);
+
