@@ -91,6 +91,7 @@ char* error_msg = "Expected return value: %d - Actual return value: %d";
 	fail_unless(ret_val == tag_name, error_msg, tag_name, ret_val);
 
 #test add_tags_selected_to_end 
+	initialize_database();
 	int ret_val = add_tags_selected_state(error); 
 	fail_unless(ret_val == end, error_msg, end, ret_val);
 
