@@ -52,13 +52,12 @@ void initialize_database(void) {
 	}
 }
 
-void create_database(void) {
+sqlite3* open_database(void) {
 
 	sqlite3 *db_object;
 	
-	err_msg = 0;
 	int db_return_code = sqlite3_open(db_name, &db_object);
-
+	
 	if (db_return_code != SQLITE_OK) {
 
 		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
@@ -66,6 +65,17 @@ void create_database(void) {
 
 		exit(EXIT_FAILURE);
 	}
+
+	return db_object;
+}
+
+void create_database(void) {
+
+	char *err_msg = 0;
+
+	int db_return_code;
+
+	sqlite3* db_object = open_database();
 
 	db_return_code = sqlite3_exec(db_object, sql_enable_foreign_keys, 0, 0, &err_msg);
 	exit_on_sql_error(db_return_code, err_msg, db_object, __LINE__, __FILE__);
@@ -89,8 +99,29 @@ void append_tag_name_to_sql_stmt(const char* tag) { //TODO Check if array is ful
 	sql_prep_stmt_input.tag_index++;
 }
 
+void prepare_sql_statement(sqlite3 *db_object, char *sql, sqlite3_stmt *stmt_to_prep) {
+//TODO debugging message wont help anymore.	
+	int db_return_code = sqlite3_prepare_v2(db_object, sql, -1, &stmt_to_prep, 0);
+	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
+}
+
+void print_returned_rows(int db_ret_code, sqlite3_stmt *prep_stmt) {
+
+	do {
+		db_ret_code = sqlite3_step(prep_stmt);
+
+		if (db_ret_code == SQLITE_ROW) {
+
+			printf("%s: ", sqlite3_column_text(prep_stmt, 0));
+			printf("%s\n", sqlite3_column_text(prep_stmt, 1));
+
+		}
+
+	} while (db_ret_code != SQLITE_DONE);
+}
+
 int insert_tags(void) {
-	
+//TODO remove ???	
 //input:
 //any amount of tags
 //any amount of paths
@@ -105,22 +136,17 @@ int insert_tags(void) {
 //  for each itemID in struct
 //   add both IDs to taggedItem
 
-	sqlite3 *db_object;
+	sqlite3* db_object = open_database();
+	
 	sqlite3_stmt *sql_insert_into_tag_stmt;
 	sqlite3_stmt *sql_insert_into_item_stmt;
 	sqlite3_stmt *sql_insert_into_taggedItem_stmt;
+
+	int db_return_code; 
+//	prepare_sql_statement(db_object, sql_insert_into_tag, sql_insert_into_tag_stmt);
+//	prepare_sql_statement(db_object, sql_insert_into_item, sql_insert_into_item_stmt);
+//	prepare_sql_statement(db_object, sql_insert_into_taggedItem, sql_insert_into_taggedItem_stmt);
 	
-	err_msg = 0;
-	int db_return_code = sqlite3_open(db_name, &db_object);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
-		sqlite3_close(db_object);
-
-		return EXIT_FAILURE;
-	}
-
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_tag , -1, &sql_insert_into_tag_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
@@ -184,105 +210,55 @@ int select_all_locations_for_tags() {
 	return EXIT_SUCCESS;
 }
 
-int select_all_locations_for_tag(const char* tag) {
+int select_all_locations_for_tag() {
 	
-	sqlite3 *db_object;
+	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_locations_for_tag_stmt;
 	
-	err_msg = 0;
-	int db_return_code = sqlite3_open(db_name, &db_object);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
-		sqlite3_close(db_object);
-
-		return EXIT_FAILURE;
-	}
-	
+	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations_for_tag, -1, &sql_select_all_locations_for_tag_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
-	db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, tag, -1, SQLITE_TRANSIENT);
+	db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, sql_prep_stmt_input.tags[0], -1, SQLITE_TRANSIENT);
 
-	do {
-		db_return_code = sqlite3_step(sql_select_all_locations_for_tag_stmt);
+	print_returned_rows(db_return_code, sql_select_all_locations_for_tag_stmt);
 
-		if (db_return_code == SQLITE_ROW) {
-
-			printf("%s: ", sqlite3_column_text(sql_select_all_locations_for_tag_stmt, 0));
-			printf("%s\n", sqlite3_column_text(sql_select_all_locations_for_tag_stmt, 1));
-
-		}
-
-	} while (db_return_code != SQLITE_DONE);
-
+	sqlite3_finalize(sql_select_all_locations_for_tag_stmt);
+	sqlite3_close(db_object);
+	
 	return EXIT_SUCCESS;
 }
 
 int select_all_tags(void) {
 	
-	sqlite3 *db_object;
+	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_tags_stmt;
 	
-	err_msg = 0;
-	int db_return_code = sqlite3_open(db_name, &db_object);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
-		sqlite3_close(db_object);
-
-		return EXIT_FAILURE;
-	}
-	
+	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_tags, -1, &sql_select_all_tags_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
-	do {
-		db_return_code = sqlite3_step(sql_select_all_tags_stmt);
+	print_returned_rows(db_return_code, sql_select_all_tags_stmt);
 
-		if (db_return_code == SQLITE_ROW) {
-
-			printf("%s: ", sqlite3_column_text(sql_select_all_tags_stmt, 0));
-			printf("%s\n", sqlite3_column_text(sql_select_all_tags_stmt, 1));
-
-		}
-
-	} while (db_return_code != SQLITE_DONE);
-
+	sqlite3_finalize(sql_select_all_tags_stmt);
+	sqlite3_close(db_object);
+	
 	return EXIT_SUCCESS;
 }
 
 int select_all_locations(void) {
-	sqlite3 *db_object;
+	
+	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_locations_stmt;
 	
-	err_msg = 0;
-	int db_return_code = sqlite3_open(db_name, &db_object);
-
-	if (db_return_code != SQLITE_OK) {
-
-		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db_object));
-		sqlite3_close(db_object);
-
-		return EXIT_FAILURE;
-	}
-	
+	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations, -1, &sql_select_all_locations_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
-	do {
-		db_return_code = sqlite3_step(sql_select_all_locations_stmt);
-
-		if (db_return_code == SQLITE_ROW) {
-
-			printf("%s: ", sqlite3_column_text(sql_select_all_locations_stmt, 0));
-			printf("%s\n", sqlite3_column_text(sql_select_all_locations_stmt, 1));
-
-		}
-
-	} while (db_return_code != SQLITE_DONE);
+	print_returned_rows(db_return_code, sql_select_all_locations_stmt);
+	
+	sqlite3_finalize(sql_select_all_locations_stmt);
+	sqlite3_close(db_object);
 	
 	return EXIT_SUCCESS;
 }

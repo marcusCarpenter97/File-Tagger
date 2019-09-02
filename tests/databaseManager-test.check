@@ -49,13 +49,17 @@ void setup(void) { //TODO does not work !!!
 
 #test select_all_files_for_one_tag
 	initialize_database();
-	int ret_val = select_all_locations_for_tag(tag_name1);
+	append_tag_name_to_sql_stmt(tag_name1);
+	int ret_val = select_all_locations_for_tag();
 	fail_unless(ret_val == RET_VAL_OK);
 	
 #test select_all_files_for_many_tags
 	initialize_database();
-	int ret_val = select_all_locations_for_tag(tag_name2); //...
-	fail_unless(ret_val == RET_VAL_OK);
+	append_tag_name_to_sql_stmt(tag_name2);
+	append_tag_name_to_sql_stmt(tag_name1);
+	//int ret_val = select_all_locations_for_tag();
+	//fail_unless(ret_val == RET_VAL_OK);
+	fail();
 
 #test select_all_tag
 	initialize_database();

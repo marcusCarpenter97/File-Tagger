@@ -25,16 +25,16 @@ extern char *sql_delete_tag;
 
 extern char *db_name;
 
-char *err_msg;
+char *err_msg;//delete???
 
-/* Public functions */
 void initialize_database(void);
+void create_database(void);
+sqlite3* open_database(void);
 void append_path_to_sql_stmt(const char* path);
 void append_tag_name_to_sql_stmt(const char* tag);
-int add_tags_to_db(void);
+void prepare_sql_statement(sqlite3 *db_object, char *sql, sqlite3_stmt *stmt_to_prep);
+void print_returned_rows(int db_ret_code, sqlite3_stmt *prep_stmt);
 
-/* Private functions */
-void create_database(void);
 void exit_on_sql_error(int db_ret_code, const char *err_msg, sqlite3 *db_object, int err_line, char *err_file);
 int insert_tags(void);
 int select_all_locations_for_tag(void);
