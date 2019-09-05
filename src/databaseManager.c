@@ -128,7 +128,8 @@ int insert_tags(void) {
 	sqlite3_stmt *sql_insert_into_item_stmt;
 	sqlite3_stmt *sql_insert_into_taggedItem_stmt;
 
-	int db_return_code; 
+	int db_return_code;
+	int tag_pair_counter = 0;
 
 	//Prepare sql statements
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_tag , -1, &sql_insert_into_tag_stmt, 0);
@@ -188,6 +189,8 @@ int insert_tags(void) {
 			
 			sqlite3_reset(sql_insert_into_taggedItem_stmt);
 			sqlite3_clear_bindings(sql_insert_into_taggedItem_stmt);
+
+			tag_pair_counter++;
 		}
 	}
 
@@ -198,7 +201,7 @@ int insert_tags(void) {
 	sqlite3_finalize(sql_insert_into_taggedItem_stmt);
 	sqlite3_close(db_object);
 
-	return EXIT_SUCCESS;
+	return tag_pair_counter;
 }
 
 int select_all_locations_for_tags() {
