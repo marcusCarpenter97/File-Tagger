@@ -38,6 +38,7 @@ void print_returned_rows(int db_ret_code, sqlite3_stmt *prep_stmt);
 void exit_on_sql_error(int db_ret_code, const char *err_msg, sqlite3 *db_object, int err_line, char *err_file);
 int insert_tags(void);
 int select_all_locations_for_tag(void);
+int select_all_locations_for_tags(void);
 int delete_tags(void);
 int select_all_locations(void);
 int select_all_tags(void);

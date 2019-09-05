@@ -100,7 +100,7 @@ void append_tag_name_to_sql_stmt(const char* tag) { //TODO Check if array is ful
 }
 
 void prepare_sql_statement(sqlite3 *db_object, char *sql, sqlite3_stmt *stmt_to_prep) {
-//TODO debugging message wont help anymore.	
+//TODO debugging message wont help anymore. Does not work. Find way to pass prep_stmt pointer properly.	
 	int db_return_code = sqlite3_prepare_v2(db_object, sql, -1, &stmt_to_prep, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 }
@@ -121,20 +121,6 @@ void print_returned_rows(int db_ret_code, sqlite3_stmt *prep_stmt) {
 }
 
 int insert_tags(void) {
-//TODO remove ???	
-//input:
-//any amount of tags
-//any amount of paths
-//start
-//for each tag in struct
-//  add tag to db
-//  save Last Insert Rowid in struct
-//for each path in struct
-//  add path to db
-//  save Last Insert Rowid in struct
-//for each tagID in struct
-//  for each itemID in struct
-//   add both IDs to taggedItem
 
 	sqlite3* db_object = open_database();
 	
@@ -143,10 +129,8 @@ int insert_tags(void) {
 	sqlite3_stmt *sql_insert_into_taggedItem_stmt;
 
 	int db_return_code; 
-//	prepare_sql_statement(db_object, sql_insert_into_tag, sql_insert_into_tag_stmt);
-//	prepare_sql_statement(db_object, sql_insert_into_item, sql_insert_into_item_stmt);
-//	prepare_sql_statement(db_object, sql_insert_into_taggedItem, sql_insert_into_taggedItem_stmt);
-	
+
+	//Prepare sql statements
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_tag , -1, &sql_insert_into_tag_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
@@ -156,13 +140,17 @@ int insert_tags(void) {
 	db_return_code = sqlite3_prepare_v2(db_object, sql_insert_into_taggedItem, -1, &sql_insert_into_taggedItem_stmt, 0); 
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
+	//Insert everything as one transaction
 	db_return_code = sqlite3_exec(db_object, "BEGIN TRANSACTION", 0, 0, 0);
 
+	//For each tag
 	for (int next_tag = 0; next_tag < sql_prep_stmt_input.tag_index; next_tag++) { 
 
+		//Add to db
 		db_return_code = sqlite3_bind_text(sql_insert_into_tag_stmt, 1, sql_prep_stmt_input.tags[next_tag], -1, SQLITE_TRANSIENT);
 		db_return_code = sqlite3_step(sql_insert_into_tag_stmt);
 
+		//Remember row id
 		int last_row_id = sqlite3_last_insert_rowid(db_object);
 		sql_prep_stmt_input.tags_id[next_tag] = last_row_id;
 	
@@ -170,12 +158,15 @@ int insert_tags(void) {
 		sqlite3_clear_bindings(sql_insert_into_tag_stmt);
 	}	
 
+	//For each path
 	for (int next_path = 0; next_path < sql_prep_stmt_input.path_index; next_path++) {
 
+		//Add to db
 		db_return_code = sqlite3_bind_text(
 				sql_insert_into_item_stmt, 1, sql_prep_stmt_input.paths[next_path], -1, SQLITE_TRANSIENT);
 		db_return_code = sqlite3_step(sql_insert_into_item_stmt);
 
+		//Remember row id
 		int last_row_id = sqlite3_last_insert_rowid(db_object);
 		sql_prep_stmt_input.paths_id[next_path] = last_row_id;
 		
@@ -183,13 +174,16 @@ int insert_tags(void) {
 		sqlite3_clear_bindings(sql_insert_into_item_stmt);
 	}	
 	
+	//For each tag-path pair add them to db
 	for (int next_tag = 0; next_tag < sql_prep_stmt_input.tag_index; next_tag++) {
 		for (int next_path = 0; next_path < sql_prep_stmt_input.path_index; next_path++) {
 			
 			db_return_code = sqlite3_bind_int(
 					sql_insert_into_taggedItem_stmt, 1, sql_prep_stmt_input.tags_id[next_tag]);
+			
 			db_return_code = sqlite3_bind_int(
 					sql_insert_into_taggedItem_stmt, 2, sql_prep_stmt_input.paths_id[next_path]);
+			
 			db_return_code = sqlite3_step(sql_insert_into_taggedItem_stmt);
 			
 			sqlite3_reset(sql_insert_into_taggedItem_stmt);
@@ -201,12 +195,33 @@ int insert_tags(void) {
 	
 	sqlite3_finalize(sql_insert_into_tag_stmt);
 	sqlite3_finalize(sql_insert_into_item_stmt);
+	sqlite3_finalize(sql_insert_into_taggedItem_stmt);
 	sqlite3_close(db_object);
 
 	return EXIT_SUCCESS;
 }
 
 int select_all_locations_for_tags() {
+	
+	sqlite3* db_object = open_database();
+	sqlite3_stmt *sql_select_all_locations_for_tag_stmt;
+	
+	int db_return_code;
+	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations_for_tag, -1, &sql_select_all_locations_for_tag_stmt, 0);
+	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
+
+	for (int curr_tag = 0; curr_tag < sql_prep_stmt_input.tag_index; curr_tag++) {
+
+		db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, sql_prep_stmt_input.tags[0], -1, SQLITE_TRANSIENT);
+		print_returned_rows(db_return_code, sql_select_all_locations_for_tag_stmt);
+		
+		sqlite3_reset(sql_select_all_locations_for_tag_stmt);
+		sqlite3_clear_bindings(sql_select_all_locations_for_tag_stmt);
+	}
+
+	sqlite3_finalize(sql_select_all_locations_for_tag_stmt);
+	sqlite3_close(db_object);
+	
 	return EXIT_SUCCESS;
 }
 
