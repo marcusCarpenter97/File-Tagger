@@ -105,19 +105,32 @@ void prepare_sql_statement(sqlite3 *db_object, char *sql, sqlite3_stmt *stmt_to_
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 }
 
-void print_returned_rows(int db_ret_code, sqlite3_stmt *prep_stmt) {
+Result_table exe_stmt_and_save_rows(sqlite3_stmt *prep_stmt) {
+	
+	int db_ret_code;
+//	int row = 0;
+	//Db_row cur_row;
+	Result_table rt = {NULL};
 
 	do {
 		db_ret_code = sqlite3_step(prep_stmt);
 
 		if (db_ret_code == SQLITE_ROW) {
 
-			printf("%s: ", sqlite3_column_text(prep_stmt, 0));
-			printf("%s\n", sqlite3_column_text(prep_stmt, 1));
+			for (int i = 0; i < MAX_TAGS_PER_TRANSACTION; i++) {
+				if (rt.table[i][0] == NULL) { //Search for empty row before adding new result.
+					rt.table[i][0] = sqlite3_column_text(prep_stmt, 0);
+					rt.table[i][1] = sqlite3_column_text(prep_stmt, 1);
+				}
 
+			}
+	//		rt.table[row] = cur_row;
+//			row++;
 		}
 
 	} while (db_ret_code != SQLITE_DONE);
+
+	return rt;
 }
 
 int insert_tags(void) {
@@ -201,13 +214,15 @@ int insert_tags(void) {
 	sqlite3_finalize(sql_insert_into_taggedItem_stmt);
 	sqlite3_close(db_object);
 
-	return tag_pair_counter;
+	return tag_pair_counter; //Return number of new insertions into the database.
 }
 
-int select_all_locations_for_tags() {
+Result_table select_all_locations_for_tags() {
 	
 	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_locations_for_tag_stmt;
+
+	Result_table rt = {NULL};
 	
 	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations_for_tag, -1, &sql_select_all_locations_for_tag_stmt, 0);
@@ -216,7 +231,7 @@ int select_all_locations_for_tags() {
 	for (int curr_tag = 0; curr_tag < sql_prep_stmt_input.tag_index; curr_tag++) {
 
 		db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, sql_prep_stmt_input.tags[0], -1, SQLITE_TRANSIENT);
-		print_returned_rows(db_return_code, sql_select_all_locations_for_tag_stmt);
+		rt = exe_stmt_and_save_rows(sql_select_all_locations_for_tag_stmt);
 		
 		sqlite3_reset(sql_select_all_locations_for_tag_stmt);
 		sqlite3_clear_bindings(sql_select_all_locations_for_tag_stmt);
@@ -225,64 +240,70 @@ int select_all_locations_for_tags() {
 	sqlite3_finalize(sql_select_all_locations_for_tag_stmt);
 	sqlite3_close(db_object);
 	
-	return EXIT_SUCCESS;
+	return rt;
 }
 
-int select_all_locations_for_tag() {
+Result_table select_all_locations_for_tag() {
 	
 	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_locations_for_tag_stmt;
 	
+	Result_table rt = {NULL};
+
 	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations_for_tag, -1, &sql_select_all_locations_for_tag_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
 	db_return_code = sqlite3_bind_text(sql_select_all_locations_for_tag_stmt, 1, sql_prep_stmt_input.tags[0], -1, SQLITE_TRANSIENT);
 
-	print_returned_rows(db_return_code, sql_select_all_locations_for_tag_stmt);
+	rt = exe_stmt_and_save_rows(sql_select_all_locations_for_tag_stmt);
 
 	sqlite3_finalize(sql_select_all_locations_for_tag_stmt);
 	sqlite3_close(db_object);
 	
-	return EXIT_SUCCESS;
+	return rt;
 }
 
-int select_all_tags(void) {
+Result_table select_all_tags(void) {
 	
 	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_tags_stmt;
 	
+	Result_table rt = {NULL};
+
 	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_tags, -1, &sql_select_all_tags_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
-	print_returned_rows(db_return_code, sql_select_all_tags_stmt);
+	rt = exe_stmt_and_save_rows(sql_select_all_tags_stmt);
 
 	sqlite3_finalize(sql_select_all_tags_stmt);
 	sqlite3_close(db_object);
 	
-	return EXIT_SUCCESS;
+	return rt;
 }
 
-int select_all_locations(void) {
+Result_table select_all_locations(void) {
 	
 	sqlite3* db_object = open_database();
 	sqlite3_stmt *sql_select_all_locations_stmt;
 	
+	Result_table rt = {NULL};
+
 	int db_return_code;
 	db_return_code = sqlite3_prepare_v2(db_object, sql_select_all_locations, -1, &sql_select_all_locations_stmt, 0);
 	exit_on_sql_error(db_return_code, sqlite3_errmsg(db_object), db_object, __LINE__, __FILE__);
 
-	print_returned_rows(db_return_code, sql_select_all_locations_stmt);
+	rt = exe_stmt_and_save_rows(sql_select_all_locations_stmt);
 	
 	sqlite3_finalize(sql_select_all_locations_stmt);
 	sqlite3_close(db_object);
 	
-	return EXIT_SUCCESS;
+	return rt;
 }
 
 int delete_tags(void) {
-	return EXIT_SUCCESS;
+	return 1;
 }
 
 //For testing.
