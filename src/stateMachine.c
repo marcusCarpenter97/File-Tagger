@@ -134,7 +134,7 @@ int check_path_type(const char* string) {
 			return file;
 		}
 	}
-		printf("Error: Not a file or directory.\n");
+		printf("Error: Not a file or directory.\n"); //TODO hide this message unleass necessary.
 		return invalid_path;
 }
 
