@@ -32,7 +32,7 @@ void db_teardown(void) {
 	append_path_to_sql_stmt(path_to_file_param1);
 	append_tag_name_to_sql_stmt(tag_name1);
 	int ret_val = insert_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	fail_unless(ret_val == 1);
 
 #test insert_one_tag_many_files
 	/*initialize_database();*/
@@ -40,7 +40,7 @@ void db_teardown(void) {
 	append_path_to_sql_stmt(path_to_dir_param1);
 	append_tag_name_to_sql_stmt(tag_name2);
 	int ret_val = insert_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	fail_unless(ret_val == 2);
 
 #test insert_many_tags_one_file
 	/*initialize_database();*/
@@ -48,7 +48,7 @@ void db_teardown(void) {
 	append_tag_name_to_sql_stmt(tag_name3);
 	append_tag_name_to_sql_stmt(tag_name4);
 	int ret_val = insert_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	fail_unless(ret_val == 2);
 
 #test insert_many_tags_many_files
 	/*initialize_database();*/
@@ -57,32 +57,32 @@ void db_teardown(void) {
 	append_tag_name_to_sql_stmt(tag_name5);
 	append_tag_name_to_sql_stmt(tag_name6);
 	int ret_val = insert_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	fail_unless(ret_val == 4); //number of tags * number of paths
 
 #tcase dbSelect
 
 #test select_all_files_for_one_tag
 	/*initialize_database();*/
 	append_tag_name_to_sql_stmt(tag_name1);
-	int ret_val = select_all_locations_for_tag();
-	fail_unless(ret_val == RET_VAL_OK);
+	Result_table rt = select_all_locations_for_tag();
+	ck_assert_msg(rt.table[0][0] != NULL, "Return table is empty.");
 	
 #test select_all_files_for_many_tags
 	/*initialize_database();*/
 	append_tag_name_to_sql_stmt(tag_name2);
 	append_tag_name_to_sql_stmt(tag_name3);
-	int ret_val = select_all_locations_for_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	Result_table rt = select_all_locations_for_tags();
+	ck_assert_msg(rt.table[0][0] != NULL, "Return table is empty.");
 
 #test select_all_tag
 	/*initialize_database();*/
-	int ret_val = select_all_tags();
-	fail_unless(ret_val == RET_VAL_OK);
+	Result_table rt = select_all_tags();
+	ck_assert_msg(rt.table[0][0] != NULL, "Return table is empty.");
 
 #test select_all_files
 	/*initialize_database();*/
-	int ret_val = select_all_locations();
-	fail_unless(ret_val == RET_VAL_OK);
+	Result_table rt = select_all_locations();
+	ck_assert_msg(rt.table[0][0] != NULL, "Return table is empty.");
 
 #main-pre
 	tcase_add_checked_fixture(tc1_1, db_setup, db_teardown);
